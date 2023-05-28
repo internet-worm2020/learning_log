@@ -14,13 +14,15 @@ import (
 const filePath string = "user_file.json"
 
 type User struct {
+	Id     int
 	Name   string
 	Age    int
 	Career string
 }
 
-func NewUser(name string, age int, career string) *User {
+func NewUser(id int, name string, age int, career string) *User {
 	return &User{
+		Id:     id,
 		Name:   name,
 		Age:    age,
 		Career: career,
@@ -43,10 +45,10 @@ func main() {
 	var userList []User
 	var data []byte
 	var err error
-	data , err = userFileReading(filePath)
+	data, err = userFileReading(filePath)
 	if err != nil {
 		userList = []User{
-			*NewUser("yuan", 23, "CEO"),
+			*NewUser(1, "yuan", 23, "CEO"),
 		}
 	} else {
 		userList, _ = userDataDeserialization(data)
@@ -64,20 +66,10 @@ func main() {
     `)
 		scanner.Scan()
 		var option int
-		option , _ = strconv.Atoi(strings.TrimSpace(scanner.Text()))
+		option, _ = strconv.Atoi(strings.TrimSpace(scanner.Text()))
 		switch option {
 		case 1:
-			println("查看用户")
-			if len(userList) == 0 {
-				fmt.Println("没有用户信息")
-				break
-			}
-			fmt.Printf("|%-4s | %-10s | %-4s | %-10s |\n", "id", "name", "age", "career")
-
-			for key, value := range userList {
-				fmt.Println("---------------------------------------")
-				fmt.Printf("|%-4d | %-10s | %-4d | %-10s |\n", key+1, value.Name, value.Age, value.Career)
-			}
+			listUser(&userList)
 		case 2:
 			addUser(&userList, scanner)
 		case 3:
@@ -196,8 +188,20 @@ func userDataDeserialization(data []byte) ([]User, error) {
 	if err != nil {
 		return make([]User, 0), err
 	}
-	fmt.Println(newUser)
 	return newUser, nil
+}
+
+func listUser(userList *[]User) {
+	fmt.Println("查看用户")
+	if len(*userList) == 0 {
+		fmt.Println("没有用户信息")
+	}
+	fmt.Printf("|%-4s | %-10s | %-4s | %-10s |\n", "id", "name", "age", "career")
+
+	for _, value := range *userList {
+		fmt.Println("---------------------------------------")
+		fmt.Printf("|%-4d | %-10s | %-4d | %-10s |\n", value.Id, value.Name, value.Age, value.Career)
+	}
 }
 
 func addUser(userList *[]User, scanner *bufio.Scanner) {
@@ -220,8 +224,9 @@ func addUser(userList *[]User, scanner *bufio.Scanner) {
 	fmt.Print("请输入职业：")
 	scanner.Scan()
 	career = strings.TrimSpace(scanner.Text())
-
-	var user User = *NewUser(name, age, career)
+	var id int
+	id = (*userList)[len(*userList)-1].Id + 1
+	var user User = *NewUser(id, name, age, career)
 	*userList = append(*userList, user)
 	var dataSerialization string
 	dataSerialization, _ = userDataSerialization(*userList)
@@ -250,7 +255,13 @@ func modifyUser(userList *[]User, scanner *bufio.Scanner) {
 	var name string
 	var age int
 	var career string
-	var user *User = &(*userList)[id-1]
+	var user *User
+	for i, v := range *userList {
+		if v.Id == id {
+			user = &((*userList)[i])
+			break
+		}
+	}
 	fmt.Printf("请输入名称，回车不修改 \"%s\" ：\n", user.Name)
 	scanner.Scan()
 
@@ -277,7 +288,7 @@ func modifyUser(userList *[]User, scanner *bufio.Scanner) {
 	if careerInput != "" {
 		career = careerInput
 	}
-	user.ModifyUser(NewUser(name, age, career))
+	user.ModifyUser(NewUser(user.Id, name, age, career))
 	var dataSerialization string
 	dataSerialization, _ = userDataSerialization(*userList)
 	err = userFileWrite(filePath, dataSerialization)
@@ -298,11 +309,16 @@ func deleteUser(userList *[]User, scanner *bufio.Scanner) {
 	var id int
 	var err error
 	id, err = strconv.Atoi(strings.TrimSpace(scanner.Text()))
-	if err != nil || id <= 0 || id > len(*userList) {
+	if err != nil || id <= 0 {
 		fmt.Println("输入的id无效")
 		return
 	}
-	*userList = append((*userList)[:id-1], (*userList)[id:]...)
+	for i, v := range *userList {
+		if v.Id == id {
+			id = i
+		}
+	}
+	*userList = append((*userList)[:id], (*userList)[id+1:]...)
 	var dataSerialization string
 	dataSerialization, _ = userDataSerialization(*userList)
 
