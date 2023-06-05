@@ -28,6 +28,11 @@ func main() {
 	}
 	defer connection.Close()
 
+	sendFile(file, fileInfo, connection)
+
+}
+
+func sendFile(file *os.File, fileInfo os.FileInfo, connection net.Conn) {
 	fileName := fileInfo.Name()
 	fileSize := fileInfo.Size()
 
@@ -57,5 +62,4 @@ func main() {
 	responseBuffer := make([]byte, 1024)
 	bytesReceived, _ := connection.Read(responseBuffer)
 	fmt.Println(string(responseBuffer[:bytesReceived]))
-
 }
