@@ -3,22 +3,24 @@ package main
 import (
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"os"
 )
 
 func main() {
-	l, err := net.Listen("tcp", "127.0.0.1:8888")
+	listener, err := net.Listen("tcp", "127.0.0.1:8888")
 	if err != nil {
-		fmt.Println("Error listening:", err)
-		return
+		log.Fatalf("Error listening: %v", err)
 	}
-	defer l.Close()
+	defer listener.Close()
 	fmt.Println("Listening on localhost:8888...")
+
 	for {
-		conn, err := l.Accept()
+		conn, err := listener.Accept()
 		if err != nil {
-			fmt.Println("Connection error:", err)
+			log.Printf("Connection error: %v", err)
+			continue
 		} else {
 			go handleRequest(conn)
 		}
@@ -26,46 +28,53 @@ func main() {
 }
 
 func handleRequest(conn net.Conn) {
-	// defer conn.Close()
-	buf := make([]byte, 1024)
-	var fileName string
-	var fileSize int
-	if _, err := fmt.Fscanln(conn, &fileName, &fileSize); err != nil {
-		fmt.Println(err)
+	defer conn.Close()
+	fileName, fileSize, err := readFileInfo(conn)
+	if err != nil {
+		log.Printf("Error reading file info: %v", err)
 		return
 	}
 	fmt.Println(fileName)
 	file, err := os.Create(fileName)
 	if err != nil {
-		fmt.Println(err)
+		log.Printf("Error creating file: %v", err)
+		return
 	}
 	defer file.Close()
-	var serverSize int
-	for {
-		if fileSize==serverSize{
-			break
-		}
-		var nn int
-		if _, err := fmt.Fscanln(conn, &nn); err != nil {
-			fmt.Println(err)
-			return
-		}
-		n, err := conn.Read(buf)
-		if err != nil {
-			fmt.Println("Error reading:", err)
-			return
-		}
-		serverSize+=n
-		if n == nn {
-			data := buf[:n]
-			_, err = io.WriteString(file, string(data))
-			if err != nil {
-				fmt.Println(err)
-			}
-		}else{
-			conn.Write([]byte("数据丢失！"))
-			conn.Close()
-		}
+	err = receiveFile(conn, file, fileSize)
+	if err != nil {
+		log.Printf("Error receiving file: %v", err)
+		return
 	}
 	conn.Write([]byte("上传完成"))
+}
+
+func readFileInfo(conn net.Conn) (string, int, error) {
+	var fileName string
+	var fileSize int
+	if _, err := fmt.Fscanln(conn, &fileName, &fileSize); err != nil {
+		return "", 0, err
+	}
+	return fileName, fileSize, nil
+}
+
+func receiveFile(conn net.Conn, file *os.File, fileSize int) error {
+	buf := make([]byte, 1024)
+	var serverFileSize int
+	for serverFileSize < fileSize {
+		n, err := conn.Read(buf)
+		if err != nil {
+			if err != io.EOF {
+				return err
+			}
+			break
+		}
+		serverFileSize += n
+		data := buf[:n]
+		_, err = file.Write(data)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

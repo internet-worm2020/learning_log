@@ -1,3 +1,4 @@
+1024
 
 To be, or not to be.
 
@@ -45,7 +46,8 @@ With a bare bodkin? Who would fardels bear,
 
 To grunt and sweat under a weary life,
 
-But that the dread of something after death,
+But that the dread of something1024
+ after death,
 
 The undiscovere'd country, from whose bourn
 
@@ -90,7 +92,8 @@ For in that sleep of death what dreams may come,
 
 When we have shuffled off this mortal coil,
 
-Must give us pausethere's the respect
+Must give us pausethere's the r861
+espect
 That makes calamity of so long life.
 
 For who would bear the whips and scorns of time,
