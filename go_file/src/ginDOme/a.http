@@ -1,0 +1,15 @@
+POST http://localhost:8084/user
+Content-Type:application/json
+
+{
+    "username":"zhaoliu",
+    "account":"dingyi",
+    "password":"123",
+    "re_password":"admin"
+}
+
+###
+GET http://localhost:8084/user/1
+
+###
+GET http://localhost:8084/user
