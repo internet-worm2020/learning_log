@@ -12,6 +12,7 @@ import (
 
 
 func main() {
+
 	// 1.加载配置
 	setting.Init(os.Args[1])
 	// 2.初始化日志
