@@ -1,11 +1,11 @@
-package users
+package models
 
 import (
 	"gorm.io/gorm"
 )
 
 type User struct {
-	gorm.Model `json:"-"`
+	gorm.Model
 	// 账号名称
 	Username string `json:"username" gorm:"not null" binding:"required"`
 	// 登录账号

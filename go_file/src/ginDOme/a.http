@@ -1,4 +1,7 @@
-POST http://localhost:8084/user
+@port=8084
+@host=localhost
+@url=http://{{host}}:{{port}}
+POST {{url}}/user
 Content-Type:application/json
 
 {
@@ -9,7 +12,7 @@ Content-Type:application/json
 }
 
 ###
-GET http://localhost:8084/user/1
+GET {{url}}/user/1
 
 ###
-GET http://localhost:8084/user
+GET {{url}}/user
