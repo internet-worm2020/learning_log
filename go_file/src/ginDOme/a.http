@@ -12,7 +12,7 @@ Content-Type:application/json
 }
 
 ###
-GET {{url}}/user/2
+GET {{url}}/user/6
 Authorization:A
 
 ###

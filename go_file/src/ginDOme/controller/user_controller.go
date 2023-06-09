@@ -1,11 +1,12 @@
 package controller
 
 import (
-	"strconv"
-	"github.com/gin-gonic/gin"
 	"gindome/models"
 	"gindome/repository"
 	"gindome/service"
+	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 func GetUserDetailHandler(c *gin.Context) {
@@ -53,8 +54,11 @@ func RegisterHandler(c *gin.Context){
 		ResponseError(c, CodeInvalidParam)
 		return
 	}
+
+
+
 	if err := service.RegisterUserService(u); err != nil {
-		ResponseError(c, CodeServerBusy)
+		ResponseError(c, CodeUserExist)
 		return
 	}
 	ResponseSuccess(c, nil)

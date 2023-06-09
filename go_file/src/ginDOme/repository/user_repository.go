@@ -6,8 +6,16 @@ import (
 )
 
 func RegisterUser(u *models.User) error {
-	var err error = mysqlDB.GetDB().Create(u).Error
+	var err error=sqlError(mysqlDB.GetDB().Create(u).Error)
 	return err
+}
+
+func GetAccount(account string)(int64,error){
+	var user models.User
+	db:=mysqlDB.GetDB().Where("account=?",account).Find(&user)
+	var totalData int64=db.RowsAffected
+	var err error=sqlError(db.Error)
+	return totalData,err
 }
 
 func GetUserById(userId uint64) (*models.UserProfile, error) {

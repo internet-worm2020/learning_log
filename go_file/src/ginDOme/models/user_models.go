@@ -7,7 +7,7 @@ import (
 type User struct {
 	gorm.Model
 	// 登录账号
-	Account string `json:"account,omitempty" gorm:"not null,unique" binding:"required"`
+	Account string `json:"account,omitempty" gorm:"unique;not null" binding:"required"`
 	// 登录密码
 	Password string `json:"password,omitempty" gorm:"not null" binding:"required"`
 	// 校验登录密码
@@ -24,7 +24,7 @@ func (User) TableName() string {
 type UserProfile struct {
 	gorm.Model `json:"-"`
 	// 账号名称
-	Name string `json:"name,omitempty" gorm:"not null" binding:"required"`
+	Name string `json:"name,omitempty" gorm:"not null"`
 	// 年龄
 	Age uint `json:"age,omitempty"`
 	// 性别
