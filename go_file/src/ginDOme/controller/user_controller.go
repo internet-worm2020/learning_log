@@ -1,11 +1,11 @@
 package controller
 
 import (
-	"fmt"
 	"strconv"
 	"github.com/gin-gonic/gin"
 	"gindome/models"
 	"gindome/repository"
+	"gindome/service"
 )
 
 func GetUserDetailHandler(c *gin.Context) {
@@ -37,11 +37,23 @@ func GetUserHandler(c *gin.Context) {
 func CreateUserHandler(c *gin.Context) {
 	u := new(models.User)
 	if err := c.ShouldBindJSON(&u); err != nil {
-		fmt.Println(err)
 		ResponseError(c, CodeInvalidParam)
 		return
 	}
 	if err := repository.CreateUser(u); err != nil {
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+	ResponseSuccess(c, nil)
+}
+
+func RegisterHandler(c *gin.Context){
+	var u *models.User=new(models.User)
+	if err := c.ShouldBindJSON(&u); err != nil {
+		ResponseError(c, CodeInvalidParam)
+		return
+	}
+	if err := service.RegisterUserService(u); err != nil {
 		ResponseError(c, CodeServerBusy)
 		return
 	}

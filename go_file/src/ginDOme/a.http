@@ -12,7 +12,18 @@ Content-Type:application/json
 }
 
 ###
-GET {{url}}/user/1
+GET {{url}}/user/2
+Authorization:A
 
 ###
-GET {{url}}/user
+GET {{url}}/user?page=2&size=10
+
+###
+POST  {{url}}/register
+Content-Type:application/json
+
+{
+    "account":"dingyi",
+    "password":"123",
+    "re_password":"123"
+}
