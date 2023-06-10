@@ -48,17 +48,15 @@ func CreateUserHandler(c *gin.Context) {
 	ResponseSuccess(c, nil)
 }
 
-func RegisterHandler(c *gin.Context){
-	var u *models.User=new(models.User)
+func RegisterHandler(c *gin.Context) {
+	var u *models.User = new(models.User)
 	if err := c.ShouldBindJSON(&u); err != nil {
 		ResponseError(c, CodeInvalidParam)
 		return
 	}
 
-
-
 	if err := service.RegisterUserService(u); err != nil {
-		ResponseError(c, CodeUserExist)
+		ResponseErrorWithMsg(c, CodeUserExist, err.Error())
 		return
 	}
 	ResponseSuccess(c, nil)

@@ -8,7 +8,7 @@ import (
 func InitRouter() *gin.Engine {
 	r := gin.Default()
 	r.Use(middleware.LoggerMiddleware())
-	r.Use(middleware.AuthMiddleware())
+	//r.Use(middleware.AuthMiddleware())
 	SetupApiRouters(r)
 	return r
 }

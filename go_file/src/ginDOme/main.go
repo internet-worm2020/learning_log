@@ -4,12 +4,10 @@ import (
 	"fmt"
 	setting "gindome/config"
 	"gindome/db/mysqlDB"
-	"gindome/router"
 	log "gindome/logging"
+	"gindome/router"
 	"os"
-
 )
-
 
 func main() {
 
@@ -23,5 +21,8 @@ func main() {
 	mysqlDB.AutoMigrateDB()
 	// 7.注册路由
 	r := router.InitRouter()
-	r.Run(fmt.Sprintf(":%d", setting.Conf.Port))
+	err := r.Run(fmt.Sprintf(":%d", setting.Conf.Port))
+	if err != nil {
+		return
+	}
 }
