@@ -2,62 +2,84 @@ package controller
 
 import (
 	"gindome/models"
-	"gindome/repository"
+	"gindome/pkg"
 	"gindome/service"
-	"strconv"
-
 	"github.com/gin-gonic/gin"
+	_ "github.com/go-playground/validator/v10"
 )
 
-func GetUserDetailHandler(c *gin.Context) {
-	var userIdStr string = c.Param("id")
-	var userIdInt uint64
-	var err error
-	userIdInt, err = strconv.ParseUint(userIdStr, 10, 64)
-	if err != nil {
-		ResponseError(c, CodeInvalidParam)
-	}
-	data, err := repository.GetUserById(userIdInt)
-	if err != nil {
-		ResponseError(c, CodeServerBusy)
-		return
-	}
-	ResponseSuccess(c, data)
-}
+//func GetUserDetailHandler(c *gin.Context) {
+//	var userIdStr string = c.Param("id")
+//	var userIdInt uint64
+//	var err error
+//	userIdInt, err = strconv.ParseUint(userIdStr, 10, 64)
+//	if err != nil {
+//		pkg.ResponseError(c, pkg.CodeInvalidParam)
+//	}
+//	data, err := repository.GetUserById(userIdInt)
+//	if err != nil {
+//		pkg.ResponseError(c, pkg.CodeServerBusy)
+//		return
+//	}
+//	pkg.ResponseSuccess(c, data)
+//}
+//
+//func GetUserHandler(c *gin.Context) {
+//	page, size := pkg.GetPageInfo(c)
+//	data, err := repository.GetUserList(page, size)
+//	if err != nil {
+//		pkg.ResponseError(c, pkg.CodeServerBusy)
+//		return
+//	}
+//	pkg.ResponseSuccess(c, data)
+//}
+//
+//func CreateUserHandler(c *gin.Context) {
+//	u := new(models.User)
+//	if err := c.ShouldBindJSON(&u); err != nil {
+//		pkg.ResponseError(c, pkg.CodeInvalidParam)
+//		return
+//	}
+//	if err := repository.CreateUser(u); err != nil {
+//		pkg.ResponseError(c, pkg.CodeServerBusy)
+//		return
+//	}
+//	pkg.ResponseSuccess(c, nil)
+//}
 
-func GetUserHandler(c *gin.Context) {
-	page, size := GetPageInfo(c)
-	data, err := repository.GetUserList(page, size)
-	if err != nil {
-		ResponseError(c, CodeServerBusy)
-		return
-	}
-	ResponseSuccess(c, data)
-}
-
-func CreateUserHandler(c *gin.Context) {
-	u := new(models.User)
-	if err := c.ShouldBindJSON(&u); err != nil {
-		ResponseError(c, CodeInvalidParam)
-		return
-	}
-	if err := repository.CreateUser(u); err != nil {
-		ResponseError(c, CodeServerBusy)
-		return
-	}
-	ResponseSuccess(c, nil)
-}
-
+// RegisterHandler 注册账户
 func RegisterHandler(c *gin.Context) {
 	var u *models.User = new(models.User)
-	if err := c.ShouldBindJSON(&u); err != nil {
-		ResponseError(c, CodeInvalidParam)
+
+	if err := c.ShouldBind(&u); err != nil {
+		pkg.ResponseError(c, pkg.CodeInvalidParam)
 		return
 	}
 
-	if err := service.RegisterUserService(u); err != nil {
-		ResponseErrorWithMsg(c, CodeUserExist, err.Error())
+	if err := registerUser(u.Account, u.Password, u.RePassword); err != nil {
+		pkg.ResponseError(c, pkg.CodeInvalidParam)
 		return
 	}
-	ResponseSuccess(c, nil)
+
+	data, err := service.RegisterUserService(u)
+	if data == "" {
+		pkg.ResponseErrorWithMsg(c, err.BusinessCode, err.Message)
+		return
+	}
+	pkg.ResponseSuccess(c, data)
+
+}
+
+func LoginHandler(c *gin.Context) {
+	var u *models.User = new(models.User)
+	if err := c.ShouldBind(&u); err != nil {
+		pkg.ResponseError(c, pkg.CodeInvalidParam)
+		return
+	}
+
+	if err := loginUser(u.Account, u.Password); err != nil {
+		pkg.ResponseError(c, pkg.CodeInvalidParam)
+		return
+	}
+
 }

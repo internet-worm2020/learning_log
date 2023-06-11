@@ -5,11 +5,13 @@ import (
 	"gindome/models"
 )
 
+// RegisterUser User添加数据
 func RegisterUser(u *models.User) error {
 	var err error = sqlError(mysqlDB.GetDB().Create(u).Error)
 	return err
 }
 
+// GetAccount 查找account
 func GetAccount(account string) (int64, error) {
 	var user models.User
 	db := mysqlDB.GetDB().Where("account=?", account).Find(&user)
@@ -18,6 +20,14 @@ func GetAccount(account string) (int64, error) {
 	return totalData, err
 }
 
+// GetIDByAccount 按帐户获取 ID
+func GetIDByAccount(account string) (uint, error) {
+	var Id uint
+	var err error = mysqlDB.GetDB().Table("user").Select("id").Where("account=?", account).Take(&Id).Error
+	return Id, err
+}
+
+// GetUserById 按 ID 获取用户
 func GetUserById(userId uint64) (*models.UserProfile, error) {
 	var user models.User
 	var userProfile models.UserProfile

@@ -1,16 +1,16 @@
-package controller
+package pkg
 
 type ResCode int64
 
 const (
-	CodeSuccess  ResCode = 1000
-	CodeInvalidParam  ResCode = 1001
-	CodeUserExist  ResCode = 1002
-	CodeUserNotExist  ResCode = 1003
-	CodeInvalidPassword   ResCode = 1004
-	CodeServerBusy   ResCode = 1005
-	CodeNeedLogin   ResCode = 1006
-	CodeInvalidToken   ResCode = 1007
+	CodeSuccess         ResCode = 1000
+	CodeInvalidParam    ResCode = 1001
+	CodeUserExist       ResCode = 1002
+	CodeUserNotExist    ResCode = 1003
+	CodeInvalidPassword ResCode = 1004
+	CodeServerBusy      ResCode = 1005
+	CodeNeedLogin       ResCode = 1006
+	CodeInvalidToken    ResCode = 1007
 )
 
 var codeMsgMap = map[ResCode]string{
