@@ -7,7 +7,8 @@ import (
 
 func SetupApiRouters(r *gin.Engine) {
 	r.POST("/register", controller.RegisterHandler)
-	//r.GET("/user/:id", controller.GetUserDetailHandler)
+	r.POST("/login", controller.LoginHandler)
+	r.GET("/user/:id", controller.GetUserDetailHandler)
 	//r.GET("/user", controller.GetUserHandler)
 	//r.POST("/user", controller.CreateUserHandler)
 }

@@ -6,7 +6,7 @@ import (
 )
 
 // 注册账号数据校验
-func registerUser(account, password, rePassword string) error {
+func registerUserValid(account, password, rePassword string) error {
 	var valid *validator.Validate = validator.New()
 
 	var user *models.User = &models.User{
@@ -20,12 +20,14 @@ func registerUser(account, password, rePassword string) error {
 	return err
 }
 
-func loginUser(account, password string) error {
+// 登录账号数据校验
+func loginUserValid(account, password string) error {
 	var valid *validator.Validate = validator.New()
 
 	var user *models.User = &models.User{
-		Account:  account,
-		Password: password,
+		Account:    account,
+		Password:   password,
+		RePassword: password,
 	}
 
 	err := valid.Struct(user)

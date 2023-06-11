@@ -8,7 +8,7 @@ import (
 
 func RegisterUserService(u *models.User) (string, pkg.Error) {
 	// 检查用户是否已经存在
-	totalData, err := repository.GetAccount(u.Account)
+	_, totalData, err := repository.GetAccount(u.Account)
 	if err != nil {
 		return "", pkg.NewErrorAutoMsg(pkg.CodeServerBusy).WithErr(err)
 	}
@@ -42,5 +42,29 @@ func RegisterUserService(u *models.User) (string, pkg.Error) {
 	}
 
 	// 返回结果和错误信息
+	return token, pkg.NewErrorAutoMsg(pkg.CodeSuccess)
+}
+
+func LoginUserService(u *models.User) (string, pkg.Error) {
+	// 哈希加密用户密码
+	u.HashPassword()
+	// 检查用户是否已经存在
+	user, totalData, err := repository.GetAccount(u.Account)
+	if err != nil {
+		return "", pkg.NewErrorAutoMsg(pkg.CodeServerBusy).WithErr(err)
+	}
+	if totalData != 1 {
+		return "", pkg.NewErrorAutoMsg(pkg.CodeUserNotExist)
+	}
+	// 比较用户输入的账号和密码是否与数据库中的记录匹配
+	if user.Account != u.Account || user.Password != u.Password {
+		return "", pkg.NewErrorAutoMsg(pkg.CodeInvalidPassword)
+	}
+	// 生成认证令牌
+	token, err := pkg.GetToken(user.ID)
+	if err != nil {
+		return "", pkg.NewErrorAutoMsg(pkg.CodeServerBusy).WithErr(err)
+	}
+
 	return token, pkg.NewErrorAutoMsg(pkg.CodeSuccess)
 }

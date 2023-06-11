@@ -12,12 +12,12 @@ func RegisterUser(u *models.User) error {
 }
 
 // GetAccount 查找account
-func GetAccount(account string) (int64, error) {
+func GetAccount(account string) (*models.User, int64, error) {
 	var user models.User
 	db := mysqlDB.GetDB().Where("account=?", account).Find(&user)
 	var totalData int64 = db.RowsAffected
 	var err error = sqlError(db.Error)
-	return totalData, err
+	return &user, totalData, err
 }
 
 // GetIDByAccount 按帐户获取 ID

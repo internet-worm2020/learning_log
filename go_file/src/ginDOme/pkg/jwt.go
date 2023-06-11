@@ -1,6 +1,7 @@
 package pkg
 
 import (
+	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"time"
@@ -30,4 +31,18 @@ func GetToken(uid uint) (string, error) {
 	tokenString, err := token.SignedString(secretKey)
 	fmt.Println("JWT token:", tokenString)
 	return tokenString, err
+}
+
+func ParseToken(tokenString string) (*Claims, error) {
+	secretKey := []byte("my-secret-key")
+	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+		return secretKey, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	if claims, ok := token.Claims.(*Claims); ok && token.Valid {
+		return claims, nil
+	}
+	return nil, errors.New("无效令牌")
 }
