@@ -65,7 +65,7 @@ func RegisterHandler(c *gin.Context) {
 	}
 
 	data, err := service.RegisterUserService(u)
-	if data == "" {
+	if data == nil {
 		pkg.ResponseErrorWithMsg(c, err.BusinessCode, err.Message)
 		return
 	}
@@ -77,18 +77,17 @@ func RegisterHandler(c *gin.Context) {
 func LoginHandler(c *gin.Context) {
 	var u *models.User = new(models.User)
 	if err := c.ShouldBind(&u); err != nil {
-		fmt.Println(1)
+		fmt.Println(err.Error())
 		pkg.ResponseError(c, pkg.CodeInvalidParam)
 		return
 	}
 
 	if err := loginUserValid(u.Account, u.Password); err != nil {
-		fmt.Println(2)
 		pkg.ResponseError(c, pkg.CodeInvalidParam)
 		return
 	}
 	data, err := service.LoginUserService(u)
-	if data == "" {
+	if data == nil {
 		pkg.ResponseErrorWithMsg(c, err.BusinessCode, err.Message)
 		return
 	}

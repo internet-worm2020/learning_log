@@ -21,7 +21,7 @@ func main() {
 	mysqlDB.AutoMigrateDB()
 	// 7.注册路由
 	r := router.InitRouter()
-	err := r.Run(fmt.Sprintf(":%d", setting.Conf.Port))
+	err := r.Run(fmt.Sprintf("127.0.0.1:%d", setting.Conf.Port))
 	if err != nil {
 		return
 	}
