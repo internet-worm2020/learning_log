@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"gindome/pkg"
+	"gindome/repository"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -29,9 +30,23 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		// 解析 Authorization 头并校验 token 是否正确
-		token, err := parseToken(authHeader)
+		token, pkgErr := parseToken(authHeader)
 		if token == nil {
-			pkg.ResponseErrorWithMsg(c, err.BusinessCode, err.Message)
+			pkg.ResponseErrorWithMsg(c, pkgErr.BusinessCode, pkgErr.Message)
+			c.Abort()
+			return
+		}
+		// 根据token中的uId和account获取用户信息
+		id,account,err:=repository.GetUserConsistent(token.UId,token.Account)
+		if err != nil {
+			pkgErr := pkg.NewErrorAutoMsg(pkg.CodeSuccess).WithErr(err)
+			pkg.ResponseErrorWithMsg(c, pkgErr.BusinessCode, pkgErr.Message)
+			c.Abort()
+			return
+		}
+		// 校验token中的uId和account是否与获取到的用户信息一致
+		if id!=token.UId||account!=token.Account{
+			pkg.ResponseError(c, pkg.CodeWrongCredentials)
 			c.Abort()
 			return
 		}
