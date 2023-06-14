@@ -4,66 +4,39 @@ import (
 	"fmt"
 	"gindome/models"
 	"gindome/pkg"
-	"gindome/repository"
 	"gindome/service"
 	"github.com/gin-gonic/gin"
-	_ "github.com/go-playground/validator/v10"
 	"strconv"
 )
 
-//func GetUserDetailHandler(c *gin.Context) {
-//	var userIdStr string = c.Param("id")
-//	var userIdInt uint64
-//	var err error
-//	userIdInt, err = strconv.ParseUint(userIdStr, 10, 64)
-//	if err != nil {
-//		pkg.ResponseError(c, pkg.CodeInvalidParam)
-//	}
-//	data, err := repository.GetUserById(userIdInt)
-//	if err != nil {
-//		pkg.ResponseError(c, pkg.CodeServerBusy)
-//		return
-//	}
-//	pkg.ResponseSuccess(c, data)
-//}
-//
-//func GetUserHandler(c *gin.Context) {
-//	page, size := pkg.GetPageInfo(c)
-//	data, err := repository.GetUserList(page, size)
-//	if err != nil {
-//		pkg.ResponseError(c, pkg.CodeServerBusy)
-//		return
-//	}
-//	pkg.ResponseSuccess(c, data)
-//}
-//
-//func CreateUserHandler(c *gin.Context) {
-//	u := new(models.User)
-//	if err := c.ShouldBindJSON(&u); err != nil {
-//		pkg.ResponseError(c, pkg.CodeInvalidParam)
-//		return
-//	}
-//	if err := repository.CreateUser(u); err != nil {
-//		pkg.ResponseError(c, pkg.CodeServerBusy)
-//		return
-//	}
-//	pkg.ResponseSuccess(c, nil)
-//}
-
 // RegisterHandler 注册账户
+// @Summary 注册账户
+// @Description 注册账户
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param account body string true "账户"
+// @Param password body string true "密码"
+// @Param re_password body string true "确认密码"
+// @Success 200 {object} User
+// @Failure 400 {object} ErrorResponse
+// @Router /users/register [post]
 func RegisterHandler(c *gin.Context) {
-	var u *models.User = new(models.User)
+	u := &models.User{}
 
-	if err := c.ShouldBind(&u); err != nil {
+	// 检查参数是否合法
+	if err := c.ShouldBind(u); err != nil {
 		pkg.ResponseError(c, pkg.CodeInvalidParam)
 		return
 	}
 
+	// 检查账户是否合法
 	if err := registerUserValid(u.Account, u.Password, u.RePassword); err != nil {
 		pkg.ResponseError(c, pkg.CodeInvalidParam)
 		return
 	}
 
+	// 注册用户
 	data, err := service.RegisterUserService(u)
 	if data == nil {
 		pkg.ResponseErrorWithMsg(c, err.BusinessCode, err.Message)
@@ -74,18 +47,33 @@ func RegisterHandler(c *gin.Context) {
 }
 
 // LoginHandler 登录账号
+// @Summary 登录账号
+// @Description 登录账号
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param account body string true "账户"
+// @Param password body string true "密码"
+// @Success 200 {object} User
+// @Failure 400 {object} ErrorResponse
+// @Router /users/login [post]
 func LoginHandler(c *gin.Context) {
-	var u *models.User = new(models.User)
-	if err := c.ShouldBind(&u); err != nil {
+	u := &models.User{}
+
+	// 检查参数是否合法
+	if err := c.ShouldBind(u); err != nil {
 		fmt.Println(err.Error())
 		pkg.ResponseError(c, pkg.CodeInvalidParam)
 		return
 	}
 
+	// 检查账户是否合法
 	if err := loginUserValid(u.Account, u.Password); err != nil {
 		pkg.ResponseError(c, pkg.CodeInvalidParam)
 		return
 	}
+
+	// 登录用户
 	data, err := service.LoginUserService(u)
 	if data == nil {
 		pkg.ResponseErrorWithMsg(c, err.BusinessCode, err.Message)
@@ -95,18 +83,59 @@ func LoginHandler(c *gin.Context) {
 
 }
 
+// GetUserDetailHandler 获取用户信息
+// @Summary 获取用户信息
+// @Description 获取用户信息
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200 {object} User
+// @Failure 400 {object} ErrorResponse
+// @Router /users/{id} [get]
 func GetUserDetailHandler(c *gin.Context) {
-	var userIdStr string = c.Param("id")
-	var userIdInt uint64
-	var err error
-	userIdInt, err = strconv.ParseUint(userIdStr, 10, 64)
+	// 从URL参数中获取用户ID
+	userIdStr := c.Param("id")
+	// 将字符串类型的用户ID转换为uint64类型
+	userIdInt, err := strconv.ParseUint(userIdStr, 10, 64)
 	if err != nil {
+		// 如果转换失败，返回参数错误
 		pkg.ResponseError(c, pkg.CodeInvalidParam)
 	}
-	data, err := repository.GetUserById(userIdInt)
+
+	// 根据用户ID获取用户信息
+	data, err := service.GetUserByIdService(userIdInt)
+	if err != nil {
+		// 如果获取用户信息失败，返回服务器繁忙错误
+		pkg.ResponseError(c, pkg.CodeServerBusy)
+		return
+	}
+	// 返回用户信息
+	pkg.ResponseSuccess(c, data)
+}
+
+// GetUserHandler 处理获取用户列表的请求
+// @Summary 获取用户列表
+// @Description 获取用户列表
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param page query int true "页码"
+// @Param size query int true "每页数量"
+// @Success 200 {object} User
+// @Failure 400 {object} ErrorResponse
+// @Router /users [get]
+func GetUserHandler(c *gin.Context) {
+	// 获取分页信息
+	page, size := pkg.GetPageInfo(c)
+	// 调用 service 层获取用户列表
+	data, err := service.GetUserListService(page, size)
+	// 如果出错，返回服务器繁忙
 	if err != nil {
 		pkg.ResponseError(c, pkg.CodeServerBusy)
 		return
 	}
+	// 返回成功响应
 	pkg.ResponseSuccess(c, data)
 }
+
