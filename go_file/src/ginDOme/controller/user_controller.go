@@ -2,11 +2,13 @@ package controller
 
 import (
 	"fmt"
+	"gindome/db/redis"
 	"gindome/models"
 	"gindome/pkg"
 	"gindome/service"
-	"github.com/gin-gonic/gin"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 // RegisterHandler 注册账户
@@ -131,4 +133,11 @@ func GetUserHandler(c *gin.Context) {
 	}
 	// 返回成功响应
 	pkg.ResponseSuccess(c, data)
+}
+
+
+func A(c *gin.Context){
+	// redis.RedisClient.Set("username", "zhangsan", 0).Err()
+	username, _ := redis.GetRedis().Get("username").Result()
+	fmt.Println(username)  // zhangsan
 }

@@ -20,6 +20,7 @@ func setupApiRouters(r *gin.Engine) {
 	r.POST("/login", controller.LoginHandler)
 	r.GET("/user/:id", controller.GetUserDetailHandler)
 	r.GET("/user", controller.GetUserHandler)
+	r.GET("/a",controller.A)
 }
 
 /*

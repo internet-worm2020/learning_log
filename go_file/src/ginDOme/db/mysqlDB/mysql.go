@@ -13,6 +13,7 @@ import (
 )
 
 var dbConn *gorm.DB
+var sqlDB *sql.DB
 
 /*
  * @description: 初始化数据库连接
@@ -72,4 +73,13 @@ func mysqlDsn(cfg *setting.MySQLConfig) string {
  */
 func GetDB() *gorm.DB {
 	return dbConn.Debug()
+}
+
+/*
+ * @description: 关闭数据库连接
+
+ * @return: error 错误信息
+ */
+func CloseDB() error{
+	return sqlDB.Close()
 }
