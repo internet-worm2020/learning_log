@@ -1,5 +1,4 @@
 mode: "dev"
-#mode: "release"
 port: 8084
 log:
   level: "info"
@@ -9,7 +8,7 @@ mysql:
   host: 127.0.0.1
   port: 3306
   user: "root"
-  password: "123456"
+  password: "g5627327"
   dbname: "data_test"
   # 连接超时
   timeout: "10s"
@@ -31,3 +30,8 @@ redis:
   password: ""
   db: 0
   pool_size: 100
+keyCollection:
+  # jwt密钥
+  jwtKey: "4N7q5bXEvFQzqS1YCDSc+YXjlTEniAs83di6zg9pOVcYzIbJeaC5KDBCJz2+wGS3/qW9hE2wIY5E4Av9X7CJPg"
+  # md5密钥
+  md5Key: "siaC3MulRfAIdfapLPHLMEgMqR2jY5XqGpEwQRXrT3M4WwOrKyTAjKIyTT/7ZEdnUZ4C5ti7Fijk4aHT9GfbyQ"

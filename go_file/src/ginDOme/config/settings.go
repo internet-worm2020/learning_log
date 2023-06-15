@@ -8,15 +8,18 @@ import (
 
 var Conf = new(AppConfig)
 
+// AppConfig
 // 定义 AppConfig 结构体，用于存储应用程序的配置信息
 type AppConfig struct {
-	Mode         string                 `mapstructure:"mode"` // 应用程序运行模式
-	Port         int                    `mapstructure:"port"` // 应用程序监听端口
-	*LogConfig   `mapstructure:"log"`   // 日志配置信息
-	*MySQLConfig `mapstructure:"mysql"` // MySQL 数据库配置信息
-	*RedisConfig `mapstructure:"redis"` // Redis 数据库配置信息
+	Mode           string                         `mapstructure:"mode"` // 应用程序运行模式
+	Port           int                            `mapstructure:"port"` // 应用程序监听端口
+	*LogConfig     `mapstructure:"log"`           // 日志配置信息
+	*MySQLConfig   `mapstructure:"mysql"`         // MySQL 数据库配置信息
+	*RedisConfig   `mapstructure:"redis"`         // Redis 数据库配置信息
+	*KeyCollection `mapstructure:"keyCollection"` // 密钥集合
 }
 
+// LogConfig
 // 定义 LogConfig 结构体，用于存储日志配置信息
 type LogConfig struct {
 	Level       string `mapstructure:"level"`         // 日志级别
@@ -24,7 +27,8 @@ type LogConfig struct {
 	LogFilePath string `mapstructure:"log_file_path"` // 日志文件路径
 }
 
-// 3. 定义 MySQLConfig 结构体，用于存储 MySQL 数据库配置信息
+// MySQLConfig
+// 定义 MySQLConfig 结构体，用于存储 MySQL 数据库配置信息
 type MySQLConfig struct {
 	Host         string `mapstructure:"host"`           // MySQL 数据库主机地址
 	User         string `mapstructure:"user"`           // MySQL 数据库用户名
@@ -41,6 +45,7 @@ type MySQLConfig struct {
 	MaxIdleConns int    `mapstructure:"max_idle_conns"` // 最大空闲连接数
 }
 
+// RedisConfig
 // 定义 RedisConfig 结构体，用于存储 Redis 数据库配置信息
 type RedisConfig struct {
 	Host         string `mapstructure:"host"`           // Redis 数据库主机地址
@@ -51,6 +56,13 @@ type RedisConfig struct {
 	MinIdleConns int    `mapstructure:"min_idle_conns"` // 最小空闲连接数
 }
 
+// KeyCollection
+// 定义 KeyCollection 结构体，用于存储 各式密钥 数据库配置信息
+type KeyCollection struct {
+	JwtKey string `mapstructure:"jwtKey"` // jwt密钥
+	Md5Key string `mapstructure:"md5Key"` // md5密钥
+}
+
 // 定义配置文件路径常量
 const (
 	devFilePath     string = "./config/config.dev.yaml"     // 开发环境配置文件路径
@@ -59,12 +71,12 @@ const (
 )
 
 /*
- * @description: 初始化配置文件
+Init
 
- * @param: mode string 运行模式
+@description: 初始化配置文件
 
- * @return: void
- */
+@param: mode string 运行模式
+*/
 func Init(mode string) {
 	// 1. 根据运行模式选择配置文件路径
 	var filePath string
@@ -98,4 +110,8 @@ func Init(mode string) {
 			panic(fmt.Sprintf("viper.Unmarshal failed, err:%v\n", err))
 		}
 	})
+}
+
+func GetA() *AppConfig {
+	return Conf
 }

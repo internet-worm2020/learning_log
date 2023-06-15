@@ -16,12 +16,12 @@ var dbConn *gorm.DB
 var sqlDB *sql.DB
 
 /*
- * @description: 初始化数据库连接
+Init
 
- * @param: cfg *setting.MySQLConfig 数据库配置
+@description: 初始化数据库连接
 
- * @return: void
- */
+@param: cfg *setting.MySQLConfig 数据库配置
+*/
 func Init(cfg *setting.MySQLConfig) {
 	// 1. 拼接数据库连接字符串
 	var dsn string = mysqlDsn(cfg)
@@ -53,12 +53,12 @@ func Init(cfg *setting.MySQLConfig) {
 }
 
 /*
- * @description: 拼接数据库连接字符串
+@description: 拼接数据库连接字符串
 
- * @param: cfg *setting.MySQLConfig 数据库配置
+@param: cfg *setting.MySQLConfig 数据库配置
 
- * @return: string 数据库连接字符串
- */
+@return: string 数据库连接字符串
+*/
 func mysqlDsn(cfg *setting.MySQLConfig) string {
 	var dsn string = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=%t&loc=%s&timeout=%s&readTimeout=%s&writeTimeout=%s",
 		cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.DB, cfg.Charset,
@@ -67,19 +67,23 @@ func mysqlDsn(cfg *setting.MySQLConfig) string {
 }
 
 /*
- * @description: 获取数据库连接
+GetDB
 
- * @return: *gorm.DB 数据库连接
- */
+@description: 获取数据库连接
+
+@return: *gorm.DB 数据库连接
+*/
 func GetDB() *gorm.DB {
 	return dbConn.Debug()
 }
 
 /*
- * @description: 关闭数据库连接
+CloseDB
 
- * @return: error 错误信息
- */
-func CloseDB() error{
+@description: 关闭数据库连接
+
+@return: error 错误信息
+*/
+func CloseDB() error {
 	return sqlDB.Close()
 }

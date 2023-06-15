@@ -9,27 +9,23 @@ import (
 )
 
 /*
- * @description: 设置API路由
+@description: 设置API路由
 
- * @param: r *gin.Engine gin引擎
-
- * @return: void
- */
+@param: r *gin.Engine gin引擎
+*/
 func setupApiRouters(r *gin.Engine) {
 	r.POST("/register", controller.RegisterHandler)
 	r.POST("/login", controller.LoginHandler)
 	r.GET("/user/:id", controller.GetUserDetailHandler)
 	r.GET("/user", controller.GetUserHandler)
-	r.GET("/a",controller.A)
+	r.GET("/a", controller.A)
 }
 
 /*
- * @description: 注册Swagger
+@description: 注册Swagger
 
- * @param: r *gin.Engine gin引擎
-
- * @return: void
- */
+@param: r *gin.Engine gin引擎
+*/
 func registerSwagger(r *gin.Engine) {
 	// 1. 设置Swagger基本信息
 	docs.SwaggerInfo.BasePath = "/"

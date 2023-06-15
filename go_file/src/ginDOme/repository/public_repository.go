@@ -6,12 +6,12 @@ import (
 )
 
 /*
- * @description: 处理 SQL 查询错误
+@description: 处理 SQL 查询错误
 
- * @param: err error SQL 查询错误
+@param: err error SQL 查询错误
 
- * @return: error 错误信息
- */
+@return: error 错误信息
+*/
 func sqlError(err error) error {
 	// 1. 判断错误类型
 	switch err {

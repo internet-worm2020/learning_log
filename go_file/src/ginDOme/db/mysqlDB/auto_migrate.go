@@ -3,8 +3,10 @@ package mysqlDB
 import "gindome/models"
 
 /*
- * @description: 自动迁移数据库
- */
+AutoMigrateDB
+
+@description: 自动迁移数据库
+*/
 func AutoMigrateDB() {
 	// 1. 获取数据库连接
 	db := GetDB()

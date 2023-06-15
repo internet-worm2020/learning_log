@@ -1,15 +1,15 @@
 package pkg
 
 import (
-	"time"
-
+	setting "gindome/config"
 	"github.com/dgrijalva/jwt-go"
+	"time"
 )
 
 const TokenExpireDuration = time.Hour * 2
 
 type Claims struct {
-	UId uint `json:"uid,omitempty"`
+	UId     uint   `json:"uid,omitempty"`
 	Account string `json:"account,omitempty"`
 	jwt.StandardClaims
 }
@@ -20,31 +20,31 @@ type Token struct {
 
 // GetToken 生成 token
 func GetToken(uid uint, account string) (*Token, error) {
-    // 设置 token 的 claims
-    claims := Claims{
-        uid,
-        account,
-        jwt.StandardClaims{
-            ExpiresAt: time.Now().Add(TokenExpireDuration).Unix(),
-            Issuer:    "lx-jwt",
-        },
-    }
-    // 生成 token
-    token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-    // 设置 secretKey
-    secretKey := []byte("my-secret-key")
-    // 签名 token
-    tokenString, err := token.SignedString(secretKey)
-    if err != nil {
-        return nil, err
-    }
-    return &Token{tokenString}, nil
+	// 设置 token 的 claims
+	claims := Claims{
+		uid,
+		account,
+		jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(TokenExpireDuration).Unix(),
+			Issuer:    "lx-jwt",
+		},
+	}
+	// 生成 token
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	// 设置 secretKey
+	secretKey := []byte(setting.GetA().JwtKey)
+	// 签名 token
+	tokenString, err := token.SignedString(secretKey)
+	if err != nil {
+		return nil, err
+	}
+	return &Token{tokenString}, nil
 }
 
 // ParseToken 解析JWT令牌
 func ParseToken(tokenString string) (*Claims, Error) {
 	// 设置密钥
-	secretKey := []byte("my-secret-key")
+	secretKey := []byte(setting.GetA().JwtKey)
 	// 解析令牌
 	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return secretKey, nil

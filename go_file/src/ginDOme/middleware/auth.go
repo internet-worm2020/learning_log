@@ -3,16 +3,15 @@ package middleware
 import (
 	"gindome/pkg"
 	"gindome/repository"
-	"strings"
-
 	"github.com/gin-gonic/gin"
+	"strings"
 )
 
 // AuthMiddleware 基于JWT的认证中间件
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 跳过认证操作的URL切片，根据需求添加
-		skipAuthURLs := []string{"index", "login", "register","swagger"}
+		skipAuthURLs := []string{"index", "login", "register", "swagger"}
 		requestURL := c.Request.URL
 		// 遍历 skipAuthURLs 切片，如果请求URL包含其中任意一个字符串，则跳过认证步骤
 		for _, skipURL := range skipAuthURLs {
@@ -37,7 +36,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 		// 根据token中的uId和account获取用户信息
-		id,account,err:=repository.GetUserConsistent(token.UId,token.Account)
+		id, account, err := repository.GetUserConsistent(token.UId, token.Account)
 		if err != nil {
 			pkgErr := pkg.NewErrorAutoMsg(pkg.CodeSuccess).WithErr(err)
 			pkg.ResponseErrorWithMsg(c, pkgErr.BusinessCode, pkgErr.Message)
@@ -45,7 +44,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 		// 校验token中的uId和account是否与获取到的用户信息一致
-		if id!=token.UId||account!=token.Account{
+		if id != token.UId || account != token.Account {
 			pkg.ResponseError(c, pkg.CodeWrongCredentials)
 			c.Abort()
 			return

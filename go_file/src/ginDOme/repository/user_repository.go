@@ -6,12 +6,14 @@ import (
 )
 
 /*
- * @description: RegisterUser 注册用户，添加数据到数据库
+RegisterUser
 
- * @param: u models.User 用户信息
+@description: RegisterUser 注册用户，添加数据到数据库
 
- * @return: error 错误信息
- */
+@param: u models.User 用户信息
+
+@return: error 错误信息
+*/
 func RegisterUser(u *models.User) error {
 	// 获取数据库连接
 	db := mysqlDB.GetDB()
@@ -23,16 +25,18 @@ func RegisterUser(u *models.User) error {
 }
 
 /*
- * @description: 根据账户名查找用户
+GetAccount
 
- * @param: account string 账户名
+@description: 根据账户名查找用户
 
- * @return: *models.User 用户信息
+@param: account string 账户名
 
- * @return: int64 影响的行数
+@return: *models.User 用户信息
 
- * @return: error 错误信息
- */
+@return: int64 影响的行数
+
+@return: error 错误信息
+*/
 func GetAccount(account string) (*models.User, int64, error) {
 	// 获取数据库连接
 	db := mysqlDB.GetDB()
@@ -49,14 +53,16 @@ func GetAccount(account string) (*models.User, int64, error) {
 }
 
 /*
- * @description: 根据账户名获取用户ID
+GetIDByAccount
 
- * @param: account string 账户名
+@description: 根据账户名获取用户ID
 
- * @return: uint 用户ID
+@param: account string 账户名
 
- * @return: error 错误信息
- */
+@return: uint 用户ID
+
+@return: error 错误信息
+*/
 func GetIDByAccount(account string) (uint, error) {
 	// 定义一个ID变量
 	var Id uint
@@ -69,14 +75,16 @@ func GetIDByAccount(account string) (uint, error) {
 }
 
 /*
- * @description: 根据用户ID获取用户信息
+GetUserById
 
- * @param: userId uint64 用户ID
+@description: 根据用户ID获取用户信息
 
- * @return: *models.UserProfile 用户信息变量
+@param: userId uint64 用户ID
 
- * @return: error 错误信息
- */
+@return: *models.UserProfile 用户信息变量
+
+@return: error 错误信息
+*/
 func GetUserById(userId uint64) (*models.UserProfile, error) {
 	// 定义一个用户变量和用户信息变量
 	var user models.User
@@ -94,18 +102,20 @@ func GetUserById(userId uint64) (*models.UserProfile, error) {
 }
 
 /*
- * @description: 查询用户数据是否一致
+GetUserConsistent
 
- * @param: uId uint 用户ID
+@description: 查询用户数据是否一致
 
- * @param: uAccount string 用户账户名
+@param: uId uint 用户ID
 
- * @return: uint 用户ID
+@param: uAccount string 用户账户名
 
- * @return: string 用户账户名
+@return: uint 用户ID
 
- * @return: error 错误信息
- */
+@return: string 用户账户名
+
+@return: error 错误信息
+*/
 func GetUserConsistent(uId uint, uAccount string) (uint, string, error) {
 	// 定义一个用户变量
 	var user struct {
@@ -121,16 +131,18 @@ func GetUserConsistent(uId uint, uAccount string) (uint, string, error) {
 }
 
 /*
- * @description: 获取用户列表
+GetUserList
 
- * @param: page int 分页页码
+@description: 获取用户列表
 
- * @param: size int 分页大小
+@param: page int 分页页码
 
- * @return: []*models.UserProfile 用户列表
+@param: size int 分页大小
 
- * @return: error 错误信息
- */
+@return: []*models.UserProfile 用户列表
+
+@return: error 错误信息
+*/
 func GetUserList(page, size int) ([]*models.UserProfile, error) {
 	// 1. 创建一个空的用户列表
 	userList := make([]*models.UserProfile, 0, size)

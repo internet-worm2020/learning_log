@@ -5,11 +5,10 @@ import (
 	setting "gindome/config"
 	"gindome/db/mysqlDB"
 	"gindome/db/redis"
-	"gindome/pkg/jobs"
 	log "gindome/logging"
+	"gindome/pkg/jobs"
 	"gindome/router"
 )
-
 
 func main() {
 	defer mysqlDB.CloseDB()
@@ -24,7 +23,7 @@ func main() {
 	// 4.初始化表结构
 	mysqlDB.AutoMigrateDB()
 	// 5.初始化redis
-	redis.Init(setting.Conf.RedisConfig);
+	redis.Init(setting.Conf.RedisConfig)
 	// 6.初始化定时任务
 	jobs.InitJobs()
 	// 7.注册路由

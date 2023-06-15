@@ -12,6 +12,7 @@ import (
 )
 
 // RegisterHandler 注册账户
+//
 //	@Summary		注册账户
 //	@Description	注册账户
 //	@Tags			Users
@@ -47,6 +48,7 @@ func RegisterHandler(c *gin.Context) {
 }
 
 // LoginHandler 登录账号
+//
 //	@Summary		登录账号
 //	@Description	登录账号
 //	@Tags			Users
@@ -82,6 +84,7 @@ func LoginHandler(c *gin.Context) {
 }
 
 // GetUserDetailHandler 获取用户信息
+//
 //	@Summary		获取用户信息
 //	@Description	获取用户信息
 //	@Tags			Users
@@ -111,6 +114,7 @@ func GetUserDetailHandler(c *gin.Context) {
 }
 
 // GetUserHandler 处理获取用户列表的请求
+//
 //	@Summary		获取用户列表
 //	@Description	获取用户列表
 //	@Tags			Users
@@ -135,9 +139,8 @@ func GetUserHandler(c *gin.Context) {
 	pkg.ResponseSuccess(c, data)
 }
 
-
-func A(c *gin.Context){
-	// redis.RedisClient.Set("username", "zhangsan", 0).Err()
+func A(c *gin.Context) {
+	redis.GetRedis().Set("username", "zhangsan", 0).Err()
 	username, _ := redis.GetRedis().Get("username").Result()
-	fmt.Println(username)  // zhangsan
+	fmt.Println(username) // zhangsan
 }

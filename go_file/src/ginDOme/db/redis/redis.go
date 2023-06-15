@@ -9,13 +9,15 @@ import (
 var redisClient *redis.Client
 
 /*
- * @description: 创建redis客户端并测试连接是否成功
+Init
 
- * @param: cfg *setting.RedisConfig Redis配置信息
- */
+@description: 创建redis客户端并测试连接是否成功
+
+@param: cfg *setting.RedisConfig Redis配置信息
+*/
 func Init(cfg *setting.RedisConfig) {
 	// 1. 创建redis客户端
-	redisClient := redis.NewClient(&redis.Options{
+	redisClient = redis.NewClient(&redis.Options{
 		Addr:         fmt.Sprintf("%s:%d", cfg.Host, cfg.Port),
 		Password:     cfg.Password, // no password set
 		DB:           cfg.DB,       // use default DB
@@ -31,30 +33,36 @@ func Init(cfg *setting.RedisConfig) {
 }
 
 /*
- * @description: 返回redis客户端
+GetRedis
 
- * @return: *redis.Client Redis客户端实例
- */
+@description: 返回redis客户端
+
+@return: *redis.Client Redis客户端实例
+*/
 func GetRedis() *redis.Client {
 	// 1. 返回redis客户端
 	return redisClient
 }
 
 /*
- * @description: 关闭redis客户端
+CloseRedis
 
- * @return: error 错误信息
- */
+@description: 关闭redis客户端
+
+@return: error 错误信息
+*/
 func CloseRedis() error {
 	// 1. 关闭redis客户端
 	return redisClient.Close()
 }
 
 /*
- * @description: 返回redis.Nil
+NilRedis
 
- * @return: error 错误信息
- */
+@description: 返回redis.Nil
+
+@return: error 错误信息
+*/
 func NilRedis() error {
 	// 1. 返回redis.Nil
 	return redis.Nil

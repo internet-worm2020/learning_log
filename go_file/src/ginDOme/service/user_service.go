@@ -7,14 +7,16 @@ import (
 )
 
 /*
- * @description: 注册用户服务
+RegisterUserService
 
- * @param: u *models.User 用户信息
+@description: 注册用户服务
 
- * @return: *pkg.Token 认证令牌
+@param: u *models.User 用户信息
 
- * @return: pkg.Error 错误信息
- */
+@return: *pkg.Token 认证令牌
+
+@return: pkg.Error 错误信息
+*/
 func RegisterUserService(u *models.User) (*pkg.Token, pkg.Error) {
 	// 1. 检查用户是否已经存在
 	_, totalData, err := repository.GetAccount(u.Account)
@@ -57,14 +59,16 @@ func RegisterUserService(u *models.User) (*pkg.Token, pkg.Error) {
 }
 
 /*
- * @description: 登录用户服务
+LoginUserService
 
- * @param: u *models.User 用户信息
+@description: 登录用户服务
 
- * @return: *pkg.Token 认证令牌
+@param: u *models.User 用户信息
 
- * @return: pkg.Error 错误信息
- */
+@return: *pkg.Token 认证令牌
+
+@return: pkg.Error 错误信息
+*/
 func LoginUserService(u *models.User) (*pkg.Token, pkg.Error) {
 	// 1. 哈希加密用户密码
 	u.HashPassword()
@@ -93,14 +97,16 @@ func LoginUserService(u *models.User) (*pkg.Token, pkg.Error) {
 }
 
 /*
- * @description: 根据用户 ID 获取用户信息
+GetUserByIdService
 
- * @param: userId uint64 用户 ID
+@description: 根据用户 ID 获取用户信息
 
- * @return: *models.UserProfile 用户信息
+@param: userId uint64 用户 ID
 
- * @return: error 错误信息
- */
+@return: *models.UserProfile 用户信息
+
+@return: error 错误信息
+*/
 func GetUserByIdService(userId uint64) (*models.UserProfile, error) {
 	// 1. 调用 repository 层获取用户信息
 	data, err := repository.GetUserById(userId)
@@ -113,16 +119,18 @@ func GetUserByIdService(userId uint64) (*models.UserProfile, error) {
 }
 
 /*
- * @description: 获取用户列表服务
+GetUserListService
 
- * @param: page int 分页页码
+@description: 获取用户列表服务
 
- * @param: size int 分页大小
+@param: page int 分页页码
 
- * @return: []*models.UserProfile 用户列表
+@param: size int 分页大小
 
- * @return: error 错误信息
- */
+@return: []*models.UserProfile 用户列表
+
+@return: error 错误信息
+*/
 func GetUserListService(page, size int) ([]*models.UserProfile, error) {
 	// 1. 调用 repository 层获取用户列表
 	data, err := repository.GetUserList(page, size)

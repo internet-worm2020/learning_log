@@ -10,16 +10,18 @@ import (
 var WebLog *logrus.Logger
 
 /*
- * @description: 初始化函数
- */
+Init
+
+@description: 初始化函数
+*/
 func Init() {
 	// 1. 初始化Web日志
 	initWebLog()
 }
 
 /*
- * @description: 初始化Web日志
- */
+@description: 初始化Web日志
+*/
 func initWebLog() {
 	// 1. 初始化Web日志名称
 	webLogName := setting.Conf.LogConfig.WebLogName
@@ -28,12 +30,12 @@ func initWebLog() {
 }
 
 /*
- * @description: 初始化日志句柄
+@description: 初始化日志句柄
 
- * @param: logFileName string 日志文件名
+@param: logFileName string 日志文件名
 
- * @return: *logrus.Logger 日志句柄
- */
+@return: *logrus.Logger 日志句柄
+*/
 func initLog(logFileName string) *logrus.Logger {
 	// 1. 创建一个新的日志句柄
 	log := logrus.New()
