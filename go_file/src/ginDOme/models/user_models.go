@@ -8,7 +8,7 @@ import (
 
 // User 用户模型
 type User struct {
-	gorm.Model
+	gorm.Model `json:"-"`
 	// Account 登录账号
 	Account string `json:"account,omitempty" gorm:"unique;not null" validate:"required"`
 	// Password 登录密码

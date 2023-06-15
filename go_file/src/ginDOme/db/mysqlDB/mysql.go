@@ -14,16 +14,26 @@ import (
 
 var dbConn *gorm.DB
 
+/*
+ * @description: 初始化数据库连接
+
+ * @param: cfg *setting.MySQLConfig 数据库配置
+
+ * @return: void
+ */
 func Init(cfg *setting.MySQLConfig) {
+	// 1. 拼接数据库连接字符串
 	var dsn string = mysqlDsn(cfg)
+	// 2. 打开数据库连接
 	sqlDB, err := sql.Open("mysql", dsn)
 	if err != nil {
 		panic(fmt.Sprintf("sql.Open err, %v", err))
 	}
+	// 3. 设置数据库连接池参数
 	sqlDB.SetMaxOpenConns(cfg.MaxOpenConns) //最大连接数
 	sqlDB.SetMaxOpenConns(cfg.MaxIdleConns)
 	sqlDB.SetConnMaxLifetime(time.Hour)
-
+	// 4. 创建 GORM 数据库连接
 	gormDB, err := gorm.Open(mySql.New(mySql.Config{
 		Conn: sqlDB,
 	}), &gorm.Config{
@@ -37,9 +47,17 @@ func Init(cfg *setting.MySQLConfig) {
 	if err != nil {
 		panic(fmt.Sprintf("链接数据库失败%s", err.Error()))
 	}
+	// 5. 保存 GORM 数据库连接
 	dbConn = gormDB
 }
 
+/*
+ * @description: 拼接数据库连接字符串
+
+ * @param: cfg *setting.MySQLConfig 数据库配置
+
+ * @return: string 数据库连接字符串
+ */
 func mysqlDsn(cfg *setting.MySQLConfig) string {
 	var dsn string = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=%t&loc=%s&timeout=%s&readTimeout=%s&writeTimeout=%s",
 		cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.DB, cfg.Charset,
@@ -47,6 +65,11 @@ func mysqlDsn(cfg *setting.MySQLConfig) string {
 	return dsn
 }
 
+/*
+ * @description: 获取数据库连接
+
+ * @return: *gorm.DB 数据库连接
+ */
 func GetDB() *gorm.DB {
 	return dbConn.Debug()
 }

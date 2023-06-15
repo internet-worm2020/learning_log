@@ -10,15 +10,15 @@ import (
 )
 
 // RegisterHandler 注册账户
-// @Summary 注册账户
-// @Description 注册账户
-// @Tags Users
-// @Accept json
-// @Produce json
-// @Param account body string true "账户"
-// @Param password body string true "密码"
-// @Param re_password body string true "确认密码"
-// @Router /register [post]
+//	@Summary		注册账户
+//	@Description	注册账户
+//	@Tags			Users
+//	@Accept			json
+//	@Produce		json
+//	@Param			account		body	string	true	"账户"
+//	@Param			password	body	string	true	"密码"
+//	@Param			re_password	body	string	true	"确认密码"
+//	@Router			/register [post]
 func RegisterHandler(c *gin.Context) {
 
 	// 注册用户
@@ -45,14 +45,14 @@ func RegisterHandler(c *gin.Context) {
 }
 
 // LoginHandler 登录账号
-// @Summary 登录账号
-// @Description 登录账号
-// @Tags Users
-// @Accept json
-// @Produce json
-// @Param account body string true "账户"
-// @Param password body string true "密码"
-// @Router /login [post]
+//	@Summary		登录账号
+//	@Description	登录账号
+//	@Tags			Users
+//	@Accept			json
+//	@Produce		json
+//	@Param			account		body	string	true	"账户"
+//	@Param			password	body	string	true	"密码"
+//	@Router			/login [post]
 func LoginHandler(c *gin.Context) {
 	u := &models.User{}
 
@@ -80,13 +80,13 @@ func LoginHandler(c *gin.Context) {
 }
 
 // GetUserDetailHandler 获取用户信息
-// @Summary 获取用户信息
-// @Description 获取用户信息
-// @Tags Users
-// @Accept json
-// @Produce json
-// @Param id path int true "User ID"
-// @Router /user/{id} [get]
+//	@Summary		获取用户信息
+//	@Description	获取用户信息
+//	@Tags			Users
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path	int	true	"User ID"
+//	@Router			/user/{id} [get]
 func GetUserDetailHandler(c *gin.Context) {
 	// 从URL参数中获取用户ID
 	userIdStr := c.Param("id")
@@ -109,14 +109,16 @@ func GetUserDetailHandler(c *gin.Context) {
 }
 
 // GetUserHandler 处理获取用户列表的请求
-// @Summary 获取用户列表
-// @Description 获取用户列表
-// @Tags Users
-// @Accept json
-// @Produce json
-// @Param page query int true "页码"
-// @Param size query int true "每页数量"
-// @Router /user [get]
+//	@Summary		获取用户列表
+//	@Description	获取用户列表
+//	@Tags			Users
+//	@Accept			json
+//	@Produce		json
+//	@Param			page	query		int	true	"页码"
+//	@Param			size	query		int	true	"每页数量"
+//	@Success		200		{object}	models.User
+//	@Failure		500		{object}	pkg.ResCode
+//	@Router			/user [get]
 func GetUserHandler(c *gin.Context) {
 	// 获取分页信息
 	page, size := pkg.GetPageInfo(c)

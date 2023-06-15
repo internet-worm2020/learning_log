@@ -10,16 +10,7 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "termsOfService": "http://swagger.io/terms/",
-        "contact": {
-            "name": "cwy",
-            "url": "http://www.swagger.io/support",
-            "email": "support@swagger.io"
-        },
-        "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-        },
+        "contact": {},
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
@@ -135,7 +126,20 @@ const docTemplate = `{
                         "required": true
                     }
                 ],
-                "responses": {}
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/pkg.ResCode"
+                        }
+                    }
+                }
             }
         },
         "/user/{id}": {
@@ -163,17 +167,116 @@ const docTemplate = `{
                 "responses": {}
             }
         }
+    },
+    "definitions": {
+        "models.User": {
+            "type": "object",
+            "required": [
+                "account",
+                "password"
+            ],
+            "properties": {
+                "account": {
+                    "description": "Account 登录账号",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "Password 登录密码",
+                    "type": "string"
+                },
+                "re_password": {
+                    "description": "RePassword 校验登录密码",
+                    "type": "string"
+                },
+                "state": {
+                    "description": "State 用户状态， -1 - 异常；0 - 锁定；1 - 正常；",
+                    "type": "integer"
+                },
+                "user_profile": {
+                    "description": "UserProfile 用户信息",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.UserProfile"
+                        }
+                    ]
+                }
+            }
+        },
+        "models.UserProfile": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "description": "地址",
+                    "type": "string"
+                },
+                "age": {
+                    "description": "年龄",
+                    "type": "integer"
+                },
+                "email": {
+                    "description": "邮箱",
+                    "type": "string"
+                },
+                "id_card": {
+                    "description": "身份证号",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "账号名称",
+                    "type": "string"
+                },
+                "number": {
+                    "description": "手机号",
+                    "type": "string"
+                },
+                "sex": {
+                    "description": "性别",
+                    "type": "integer"
+                },
+                "user_id": {
+                    "description": "User关联外键",
+                    "type": "integer"
+                }
+            }
+        },
+        "pkg.ResCode": {
+            "type": "integer",
+            "enum": [
+                1000,
+                1001,
+                1002,
+                1003,
+                1004,
+                1005,
+                1006,
+                1007,
+                1008,
+                1009
+            ],
+            "x-enum-varnames": [
+                "CodeSuccess",
+                "CodeInvalidParam",
+                "CodeUserExist",
+                "CodeUserNotExist",
+                "CodeInvalidPassword",
+                "CodeServerBusy",
+                "CodeNeedLogin",
+                "CodeInvalidToken",
+                "CodeTokenCreation",
+                "CodeWrongCredentials"
+            ]
+        }
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "1.0",
-	Host:             "cwy.helloworld.com",
-	BasePath:         "/base/path",
+	Version:          "",
+	Host:             "",
+	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "helloworld",
-	Description:      "chenwenyu test helloworld",
+	Title:            "",
+	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }
