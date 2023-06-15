@@ -12,7 +12,7 @@ import (
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 跳过认证操作的URL切片，根据需求添加
-		skipAuthURLs := []string{"index", "login", "register"}
+		skipAuthURLs := []string{"index", "login", "register","swagger"}
 		requestURL := c.Request.URL
 		// 遍历 skipAuthURLs 切片，如果请求URL包含其中任意一个字符串，则跳过认证步骤
 		for _, skipURL := range skipAuthURLs {

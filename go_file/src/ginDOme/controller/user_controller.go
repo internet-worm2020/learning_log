@@ -18,10 +18,10 @@ import (
 // @Param account body string true "账户"
 // @Param password body string true "密码"
 // @Param re_password body string true "确认密码"
-// @Success 200 {object} User
-// @Failure 400 {object} ErrorResponse
-// @Router /users/register [post]
+// @Router /register [post]
 func RegisterHandler(c *gin.Context) {
+
+	// 注册用户
 	u := &models.User{}
 
 	// 检查参数是否合法
@@ -35,8 +35,6 @@ func RegisterHandler(c *gin.Context) {
 		pkg.ResponseError(c, pkg.CodeInvalidParam)
 		return
 	}
-
-	// 注册用户
 	data, err := service.RegisterUserService(u)
 	if data == nil {
 		pkg.ResponseErrorWithMsg(c, err.BusinessCode, err.Message)
@@ -54,9 +52,7 @@ func RegisterHandler(c *gin.Context) {
 // @Produce json
 // @Param account body string true "账户"
 // @Param password body string true "密码"
-// @Success 200 {object} User
-// @Failure 400 {object} ErrorResponse
-// @Router /users/login [post]
+// @Router /login [post]
 func LoginHandler(c *gin.Context) {
 	u := &models.User{}
 
@@ -90,9 +86,7 @@ func LoginHandler(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path int true "User ID"
-// @Success 200 {object} User
-// @Failure 400 {object} ErrorResponse
-// @Router /users/{id} [get]
+// @Router /user/{id} [get]
 func GetUserDetailHandler(c *gin.Context) {
 	// 从URL参数中获取用户ID
 	userIdStr := c.Param("id")
@@ -122,9 +116,7 @@ func GetUserDetailHandler(c *gin.Context) {
 // @Produce json
 // @Param page query int true "页码"
 // @Param size query int true "每页数量"
-// @Success 200 {object} User
-// @Failure 400 {object} ErrorResponse
-// @Router /users [get]
+// @Router /user [get]
 func GetUserHandler(c *gin.Context) {
 	// 获取分页信息
 	page, size := pkg.GetPageInfo(c)
@@ -138,4 +130,3 @@ func GetUserHandler(c *gin.Context) {
 	// 返回成功响应
 	pkg.ResponseSuccess(c, data)
 }
-

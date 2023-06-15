@@ -6,17 +6,19 @@ import (
 	"gorm.io/gorm"
 )
 
+// User 用户模型
 type User struct {
 	gorm.Model
-	// 登录账号
+	// Account 登录账号
 	Account string `json:"account,omitempty" gorm:"unique;not null" validate:"required"`
-	// 登录密码
+	// Password 登录密码
 	Password string `json:"password,omitempty" gorm:"not null" validate:"required"`
-	// 校验登录密码
+	// RePassword 校验登录密码
 	RePassword string `json:"re_password,omitempty" gorm:"-" validate:"eqfield=Password"`
-	// 用户状态， -1 - 异常；0 - 锁定；1 - 正常；
-	State       int16       `json:"state,omitempty" gorm:"default:1"`
-	UserProfile UserProfile `json:"user_profile,omitempty"`
+	// State 用户状态， -1 - 异常；0 - 锁定；1 - 正常；
+	State int16 `json:"state,omitempty" gorm:"default:1"`
+	// UserProfile 用户信息
+	UserProfile UserProfile `json:"user_profile,omitempty"` // swag:ignore
 }
 
 func (User) TableName() string {

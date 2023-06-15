@@ -1,0 +1,109 @@
+basePath: /base/path
+host: cwy.helloworld.com
+info:
+  contact:
+    email: support@swagger.io
+    name: cwy
+    url: http://www.swagger.io/support
+  description: chenwenyu test helloworld
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: helloworld
+  version: "1.0"
+paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: 登录账号
+      parameters:
+      - description: 账户
+        in: body
+        name: account
+        required: true
+        schema:
+          type: string
+      - description: 密码
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: 登录账号
+      tags:
+      - Users
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: 注册账户
+      parameters:
+      - description: 账户
+        in: body
+        name: account
+        required: true
+        schema:
+          type: string
+      - description: 密码
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      - description: 确认密码
+        in: body
+        name: re_password
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: 注册账户
+      tags:
+      - Users
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: 获取用户列表
+      parameters:
+      - description: 页码
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: 每页数量
+        in: query
+        name: size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      summary: 获取用户列表
+      tags:
+      - Users
+  /user/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 获取用户信息
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      summary: 获取用户信息
+      tags:
+      - Users
+swagger: "2.0"
