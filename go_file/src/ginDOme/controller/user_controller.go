@@ -140,7 +140,8 @@ func GetUserHandler(c *gin.Context) {
 }
 
 func A(c *gin.Context) {
-	redis.GetRedis().Set("username", "zhangsan", 0).Err()
-	username, _ := redis.GetRedis().Get("username").Result()
+	redis0,_:=redis.GetRedis(0)
+	redis0.Set("username", "zhangsan", 0).Err()
+	username, _ := redis0.Get("username").Result()
 	fmt.Println(username) // zhangsan
 }

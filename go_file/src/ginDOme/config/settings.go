@@ -48,12 +48,12 @@ type MySQLConfig struct {
 // RedisConfig
 // 定义 RedisConfig 结构体，用于存储 Redis 数据库配置信息
 type RedisConfig struct {
-	Host         string `mapstructure:"host"`           // Redis 数据库主机地址
-	Password     string `mapstructure:"password"`       // Redis 数据库密码
-	Port         int    `mapstructure:"port"`           // Redis 数据库端口号
-	DB           int    `mapstructure:"db"`             // Redis 数据库编号
-	PoolSize     int    `mapstructure:"pool_size"`      // 连接池大小
-	MinIdleConns int    `mapstructure:"min_idle_conns"` // 最小空闲连接数
+	Host         string  `mapstructure:"host"`           // Redis 数据库主机地址
+	Password     string  `mapstructure:"password"`       // Redis 数据库密码
+	Port         int     `mapstructure:"port"`           // Redis 数据库端口号
+	DB           [16]int `mapstructure:"db"`             // Redis 数据库编号
+	PoolSize     int     `mapstructure:"pool_size"`      // 连接池大小
+	MinIdleConns int     `mapstructure:"min_idle_conns"` // 最小空闲连接数
 }
 
 // KeyCollection
