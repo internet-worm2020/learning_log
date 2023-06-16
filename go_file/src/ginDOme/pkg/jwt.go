@@ -32,7 +32,7 @@ func GetToken(uid uint, account string) (*Token, error) {
 	// 生成 token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	// 设置 secretKey
-	secretKey := []byte(setting.GetA().JwtKey)
+	secretKey := []byte(setting.GetConf().JwtKey)
 	// 签名 token
 	tokenString, err := token.SignedString(secretKey)
 	if err != nil {
@@ -44,7 +44,7 @@ func GetToken(uid uint, account string) (*Token, error) {
 // ParseToken 解析JWT令牌
 func ParseToken(tokenString string) (*Claims, Error) {
 	// 设置密钥
-	secretKey := []byte(setting.GetA().JwtKey)
+	secretKey := []byte(setting.GetConf().JwtKey)
 	// 解析令牌
 	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return secretKey, nil

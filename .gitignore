@@ -1,3 +1,4 @@
 go_file/src/ginDOme/vendor
 go_file/src/ginDOme/log
 go_file/src/ginDOme/tmp
+go_file/src/ginDOme/config/config.local.yaml

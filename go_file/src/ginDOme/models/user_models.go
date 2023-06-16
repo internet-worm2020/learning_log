@@ -1,8 +1,9 @@
 package models
 
 import (
-	"crypto/sha1"
+	"crypto/sha256"
 	"encoding/hex"
+	setting "gindome/config"
 	"gorm.io/gorm"
 )
 
@@ -25,9 +26,12 @@ func (User) TableName() string {
 	return "user"
 }
 func (u *User) HashPassword() {
-	var hashPassword []byte = []byte(u.Password)
-	var hash [20]byte = sha1.Sum(hashPassword)
-	u.Password = hex.EncodeToString(hash[:])
+	var salt []byte=[]byte(setting.GetConf().Md5Key)
+	var passwordWithSalt []byte
+	passwordWithSalt = append(passwordWithSalt, salt[:]...) // 添加盐值到密码数组
+	passwordWithSalt = append(passwordWithSalt, []byte(u.Password)...)               // 添加用户密码到密码数组
+	var hash [32]byte = sha256.Sum256(passwordWithSalt)
+    u.Password = hex.EncodeToString(hash[:])          // 将密码及盐值的哈希值转换为十六进制字符串，并保存在 User 结构体中作为新的密码
 }
 
 type UserProfile struct {

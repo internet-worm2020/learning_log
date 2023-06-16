@@ -112,6 +112,6 @@ func Init(mode string) {
 	})
 }
 
-func GetA() *AppConfig {
+func GetConf() *AppConfig {
 	return Conf
 }
