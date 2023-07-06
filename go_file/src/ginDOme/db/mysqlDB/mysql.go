@@ -26,7 +26,8 @@ func Init(cfg *setting.MySQLConfig) {
 	// 1. 拼接数据库连接字符串
 	var dsn string = mysqlDsn(cfg)
 	// 2. 打开数据库连接
-	sqlDB, err := sql.Open("mysql", dsn)
+	var err error
+	sqlDB, err = sql.Open("mysql", dsn)
 	if err != nil {
 		panic(fmt.Sprintf("sql.Open err, %v", err))
 	}
