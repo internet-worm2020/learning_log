@@ -265,19 +265,10 @@ linters-settings:
     disabled-checks:
       - regexpMust
       - ifElseChain
-      - exitAfterDefer
     enabled-tags:
-      - diagnostic
-      - style
       - performance
-      - experimental
-      - opinionated
     disabled-tags:
-      - diagnostic
-      - style
-      - performance
       - experimental
-      - opinionated
     settings:
       captLocal:
         paramsOnly: false
@@ -295,8 +286,6 @@ linters-settings:
         skipTestFuncs: true
       ruleguard:
         rules: ""
-      tooManyResultsChecker:
-        maxResults: 10
       truncateCmp:
         skipArchDependent: false
       underef:
@@ -339,18 +328,18 @@ linters-settings:
     # by default
     extra-rules: false
 
-  goheader:
-    values:
-      const:
-      # define here const type values in format k:v, for example:
-      # COMPANY: MY COMPANY
-      regexp:
-      # define here regexp type values, for example
-      # AUTHOR: .*@mycompany\.com
-    template:
-      -
-    template-path:
-    # also as alternative of directive 'template' you may put the path to file with the template source
+  # goheader:
+  #   values:
+  #     const:
+  #     # define here const type values in format k:v, for example:
+  #     # COMPANY: MY COMPANY
+  #     regexp:
+  #     # define here regexp type values, for example
+  #     # AUTHOR: .*@mycompany\.com
+  #   template:
+  #     -
+  #   template-path:
+  #   # also as alternative of directive 'template' you may put the path to file with the template source
   goimports:
     # put imports beginning with prefix after 3rd-party packages;
     # it's a comma-separated list of prefixes

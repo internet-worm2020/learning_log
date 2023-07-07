@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 )
@@ -9,7 +10,7 @@ import (
 var Conf = new(AppConfig)
 
 // AppConfig
-// 定义 AppConfig 结构体，用于存储应用程序的配置信息
+// 定义 AppConfig 结构体，用于存储应用程序的配置信息.
 type AppConfig struct {
 	Mode           string                         `mapstructure:"mode"` // 应用程序运行模式
 	Port           int                            `mapstructure:"port"` // 应用程序监听端口
@@ -20,7 +21,7 @@ type AppConfig struct {
 }
 
 // LogConfig
-// 定义 LogConfig 结构体，用于存储日志配置信息
+// 定义 LogConfig 结构体，用于存储日志配置信息.
 type LogConfig struct {
 	Level       string `mapstructure:"level"`         // 日志级别
 	WebLogName  string `mapstructure:"web_log_name"`  // Web 日志名称
@@ -28,7 +29,7 @@ type LogConfig struct {
 }
 
 // MySQLConfig
-// 定义 MySQLConfig 结构体，用于存储 MySQL 数据库配置信息
+// 定义 MySQLConfig 结构体，用于存储 MySQL 数据库配置信息.
 type MySQLConfig struct {
 	Host         string `mapstructure:"host"`           // MySQL 数据库主机地址
 	User         string `mapstructure:"user"`           // MySQL 数据库用户名
@@ -46,7 +47,7 @@ type MySQLConfig struct {
 }
 
 // RedisConfig
-// 定义 RedisConfig 结构体，用于存储 Redis 数据库配置信息
+// 定义 RedisConfig 结构体，用于存储 Redis 数据库配置信息.
 type RedisConfig struct {
 	Host         string  `mapstructure:"host"`           // Redis 数据库主机地址
 	Password     string  `mapstructure:"password"`       // Redis 数据库密码
@@ -57,13 +58,13 @@ type RedisConfig struct {
 }
 
 // KeyCollection
-// 定义 KeyCollection 结构体，用于存储 各式密钥 数据库配置信息
+// 定义 KeyCollection 结构体，用于存储 各式密钥 数据库配置信息.
 type KeyCollection struct {
 	JwtKey string `mapstructure:"jwtKey"` // jwt密钥
 	Md5Key string `mapstructure:"md5Key"` // md5密钥
 }
 
-// 定义配置文件路径常量
+// 定义配置文件路径常量.
 const (
 	devFilePath     string = "./config/config.dev.yaml"     // 开发环境配置文件路径
 	releaseFilePath string = "./config/config.release.yaml" // 生产环境配置文件路径
@@ -75,7 +76,7 @@ Init
 
 @description: 初始化配置文件
 
-@param: mode string 运行模式
+@param: mode string 运行模式.
 */
 func Init(mode string) {
 	// 1. 根据运行模式选择配置文件路径

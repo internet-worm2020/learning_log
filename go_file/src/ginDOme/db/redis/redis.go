@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	setting "gindome/config"
+
 	"github.com/go-redis/redis"
 )
 
@@ -14,7 +15,7 @@ Init
 
 @description: 创建redis客户端并测试连接是否成功
 
-@param: cfgs []*setting.RedisConfig Redis配置信息列表
+@param: cfgs []*setting.RedisConfig Redis配置信息列表.
 */
 func Init(cfg *setting.RedisConfig) {
 	for _, s := range cfg.DB {
@@ -46,7 +47,7 @@ GetRedis
 
 @return: *redis.Client Redis客户端实例
 
-@return: error 错误信息
+@return: error 错误信息.
 */
 func GetRedis(index int) (*redis.Client, error) {
 	// 1. 根据实际情况检查index参数的合法性
@@ -62,18 +63,17 @@ CloseRedis
 
 @description: 关闭所有redis客户端
 
-@return: error 错误信息
+@return: error 错误信息.
 */
 func CloseRedis() error {
-    // 遍历所有 Redis 客户端，逐一关闭
-    for _, client := range redisClients {
-        err := client.Close()
-        if err != nil {
-            return err
-        }
-    }
+	// 遍历所有 Redis 客户端，逐一关闭
+	for _, client := range redisClients {
+		err := client.Close()
+		if err != nil {
+			return err
+		}
+	}
 
-    // 返回空的错误信息（表示成功）
-    return nil
+	// 返回空的错误信息（表示成功）
+	return nil
 }
-

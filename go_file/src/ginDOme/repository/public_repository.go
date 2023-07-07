@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+
 	"gorm.io/gorm"
 )
 
@@ -10,7 +11,7 @@ import (
 
 @param: err error SQL 查询错误
 
-@return: error 错误信息
+@return: error 错误信息.
 */
 func sqlError(err error) error {
 	// 1. 判断错误类型

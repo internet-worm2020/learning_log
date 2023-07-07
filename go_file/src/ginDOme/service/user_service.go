@@ -15,7 +15,7 @@ RegisterUserService
 
 @return: *pkg.Token 认证令牌
 
-@return: pkg.Error 错误信息
+@return: pkg.Error 错误信息.
 */
 func RegisterUserService(u *models.User) (*pkg.Token, pkg.Error) {
 	// 1. 检查用户是否已经存在
@@ -67,7 +67,7 @@ LoginUserService
 
 @return: *pkg.Token 认证令牌
 
-@return: pkg.Error 错误信息
+@return: pkg.Error 错误信息.
 */
 func LoginUserService(u *models.User) (*pkg.Token, pkg.Error) {
 	// 1. 哈希加密用户密码
@@ -105,7 +105,7 @@ GetUserByIdService
 
 @return: *models.UserProfile 用户信息
 
-@return: error 错误信息
+@return: error 错误信息.
 */
 func GetUserByIdService(userId uint64) (*models.UserProfile, error) {
 	// 1. 调用 repository 层获取用户信息
@@ -129,7 +129,7 @@ GetUserListService
 
 @return: []*models.UserProfile 用户列表
 
-@return: error 错误信息
+@return: error 错误信息.
 */
 func GetUserListService(page, size int) ([]*models.UserProfile, error) {
 	// 1. 调用 repository 层获取用户列表

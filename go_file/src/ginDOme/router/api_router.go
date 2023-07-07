@@ -3,6 +3,7 @@ package router
 import (
 	"gindome/controller"
 	docs "gindome/docs"
+
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -11,7 +12,7 @@ import (
 /*
 @description: 设置API路由
 
-@param: r *gin.Engine gin引擎
+@param: r *gin.Engine gin引擎.
 */
 func setupApiRouters(r *gin.Engine) {
 	r.POST("/register", controller.RegisterHandler)
@@ -24,7 +25,7 @@ func setupApiRouters(r *gin.Engine) {
 /*
 @description: 注册Swagger
 
-@param: r *gin.Engine gin引擎
+@param: r *gin.Engine gin引擎.
 */
 func registerSwagger(r *gin.Engine) {
 	// 1. 设置Swagger基本信息
@@ -36,5 +37,4 @@ func registerSwagger(r *gin.Engine) {
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 	// 2. 注册Swagger路由
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
 }

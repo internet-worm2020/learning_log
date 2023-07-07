@@ -23,7 +23,6 @@ import (
 //	@Param			re_password	body	string	true	"确认密码"
 //	@Router			/register [post]
 func RegisterHandler(c *gin.Context) {
-
 	// 注册用户
 	u := &models.User{}
 
@@ -44,7 +43,6 @@ func RegisterHandler(c *gin.Context) {
 		return
 	}
 	pkg.ResponseSuccess(c, data)
-
 }
 
 // LoginHandler 登录账号
@@ -80,7 +78,6 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 	pkg.ResponseSuccess(c, data)
-
 }
 
 // GetUserDetailHandler 获取用户信息
@@ -140,7 +137,7 @@ func GetUserHandler(c *gin.Context) {
 }
 
 func A(c *gin.Context) {
-	redis0,_:=redis.GetRedis(0)
+	redis0, _ := redis.GetRedis(0)
 	redis0.Set("username", "zhangsan", 0).Err()
 	username, _ := redis0.Get("username").Result()
 	fmt.Println(username) // zhangsan

@@ -2,6 +2,7 @@ package router
 
 import (
 	"gindome/middleware"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -10,7 +11,7 @@ InitRouter
 
 @description: 初始化路由
 
-@return: *gin.Engine gin引擎
+@return: *gin.Engine gin引擎.
 */
 func InitRouter() *gin.Engine {
 	// 1. 创建gin引擎

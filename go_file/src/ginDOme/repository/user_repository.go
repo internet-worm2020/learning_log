@@ -12,7 +12,7 @@ RegisterUser
 
 @param: u models.User 用户信息
 
-@return: error 错误信息
+@return: error 错误信息.
 */
 func RegisterUser(u *models.User) error {
 	// 获取数据库连接
@@ -35,7 +35,7 @@ GetAccount
 
 @return: int64 影响的行数
 
-@return: error 错误信息
+@return: error 错误信息.
 */
 func GetAccount(account string) (*models.User, int64, error) {
 	// 获取数据库连接
@@ -61,7 +61,7 @@ GetIDByAccount
 
 @return: uint 用户ID
 
-@return: error 错误信息
+@return: error 错误信息.
 */
 func GetIDByAccount(account string) (uint, error) {
 	// 定义一个ID变量
@@ -83,7 +83,7 @@ GetUserById
 
 @return: *models.UserProfile 用户信息变量
 
-@return: error 错误信息
+@return: error 错误信息.
 */
 func GetUserById(userId uint64) (*models.UserProfile, error) {
 	// 定义一个用户变量和用户信息变量
@@ -114,7 +114,7 @@ GetUserConsistent
 
 @return: string 用户账户名
 
-@return: error 错误信息
+@return: error 错误信息.
 */
 func GetUserConsistent(uId uint, uAccount string) (uint, string, error) {
 	// 定义一个用户变量
@@ -141,7 +141,7 @@ GetUserList
 
 @return: []*models.UserProfile 用户列表
 
-@return: error 错误信息
+@return: error 错误信息.
 */
 func GetUserList(page, size int) ([]*models.UserProfile, error) {
 	// 1. 创建一个空的用户列表

@@ -2,19 +2,20 @@ package controller
 
 import (
 	"gindome/models"
+
 	"github.com/go-playground/validator/v10"
 )
 
 /*
- * @description: 校验注册账号数据
+* @description: 校验注册账号数据
 
- * @param: account string 账号
+* @param: account string 账号
 
- * @param: password string 密码
+* @param: password string 密码
 
- * @param: rePassword string 重复密码
+* @param: rePassword string 重复密码
 
- * @return: error 错误信息
+ * @return: error 错误信息.
  */
 func registerUserValid(account, password, rePassword string) error {
 	// 1. 创建一个validator实例
@@ -35,13 +36,13 @@ func registerUserValid(account, password, rePassword string) error {
 }
 
 /*
- * @description: 校验登录账号数据
+* @description: 校验登录账号数据
 
- * @param: account string 账号
+* @param: account string 账号
 
- * @param: password string 密码
+* @param: password string 密码
 
- * @return: error 错误信息
+ * @return: error 错误信息.
  */
 func loginUserValid(account, password string) error {
 	// 1. 创建一个validator实例

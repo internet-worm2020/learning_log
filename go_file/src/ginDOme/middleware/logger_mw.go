@@ -3,12 +3,12 @@ package middleware
 import (
 	setting "gindome/config"
 	"gindome/logging"
-	"path"
-	"time"
 	"github.com/gin-gonic/gin"
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"github.com/rifflock/lfshook"
 	"github.com/sirupsen/logrus"
+	"path"
+	"time"
 )
 
 func LoggerMiddleware() gin.HandlerFunc {
@@ -45,21 +45,21 @@ func LoggerMiddleware() gin.HandlerFunc {
 	}))
 
 	return func(c *gin.Context) {
-		//开始时间
+		// 开始时间
 		startTime := time.Now()
-		//处理请求
+		// 处理请求
 		c.Next()
-		//结束时间
+		// 结束时间
 		endTime := time.Now()
 		// 执行时间
 		latencyTime := endTime.Sub(startTime)
-		//请求方式
+		// 请求方式
 		reqMethod := c.Request.Method
-		//请求路由
+		// 请求路由
 		reqUrl := c.Request.RequestURI
-		//状态码
+		// 状态码
 		statusCode := c.Writer.Status()
-		//请求ip
+		// 请求ip
 		clientIP := c.ClientIP()
 
 		// 日志格式
@@ -70,6 +70,5 @@ func LoggerMiddleware() gin.HandlerFunc {
 			"req_method":   reqMethod,
 			"req_uri":      reqUrl,
 		}).Info()
-
 	}
 }

@@ -12,15 +12,17 @@ import (
 	"gorm.io/gorm/schema"
 )
 
-var dbConn *gorm.DB
-var sqlDB *sql.DB
+var (
+	dbConn *gorm.DB
+	sqlDB  *sql.DB
+)
 
 /*
 Init
 
 @description: 初始化数据库连接
 
-@param: cfg *setting.MySQLConfig 数据库配置
+@param: cfg *setting.MySQLConfig 数据库配置.
 */
 func Init(cfg *setting.MySQLConfig) {
 	// 1. 拼接数据库连接字符串
@@ -32,7 +34,7 @@ func Init(cfg *setting.MySQLConfig) {
 		panic(fmt.Sprintf("sql.Open err, %v", err))
 	}
 	// 3. 设置数据库连接池参数
-	sqlDB.SetMaxOpenConns(cfg.MaxOpenConns) //最大连接数
+	sqlDB.SetMaxOpenConns(cfg.MaxOpenConns) // 最大连接数
 	sqlDB.SetMaxOpenConns(cfg.MaxIdleConns)
 	sqlDB.SetConnMaxLifetime(time.Hour)
 	// 4. 创建 GORM 数据库连接
@@ -40,7 +42,7 @@ func Init(cfg *setting.MySQLConfig) {
 		Conn: sqlDB,
 	}), &gorm.Config{
 		SkipDefaultTransaction:                   false,
-		DisableForeignKeyConstraintWhenMigrating: true, //禁用外键生成
+		DisableForeignKeyConstraintWhenMigrating: true, // 禁用外键生成
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,
 		},
@@ -58,7 +60,7 @@ func Init(cfg *setting.MySQLConfig) {
 
 @param: cfg *setting.MySQLConfig 数据库配置
 
-@return: string 数据库连接字符串
+@return: string 数据库连接字符串.
 */
 func mysqlDsn(cfg *setting.MySQLConfig) string {
 	var dsn string = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=%t&loc=%s&timeout=%s&readTimeout=%s&writeTimeout=%s",
@@ -72,7 +74,7 @@ GetDB
 
 @description: 获取数据库连接
 
-@return: *gorm.DB 数据库连接
+@return: *gorm.DB 数据库连接.
 */
 func GetDB() *gorm.DB {
 	return dbConn.Debug()
@@ -83,7 +85,7 @@ CloseDB
 
 @description: 关闭数据库连接
 
-@return: error 错误信息
+@return: error 错误信息.
 */
 func CloseDB() error {
 	return sqlDB.Close()
