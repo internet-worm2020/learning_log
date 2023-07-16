@@ -18,9 +18,10 @@ type User struct {
 	// RePassword 校验登录密码
 	RePassword string `json:"re_password,omitempty" gorm:"-" validate:"eqfield=Password"`
 	// State 用户状态， -1 - 异常；0 - 锁定；1 - 正常；
-	State int16 `json:"state,omitempty" gorm:"default:1"`
+	State         int16 `json:"state,omitempty" gorm:"default:1"`
+	UserProfileID uint
 	// UserProfile 用户信息
-	UserProfile UserProfile `json:"user_profile,omitempty"` // swag:ignore
+	UserProfile UserProfile `json:"user_profile,omitempty" gorm:"constraint:OnDelete:CASCADE;"`
 }
 
 func (User) TableName() string {
@@ -53,7 +54,7 @@ type UserProfile struct {
 	// 邮箱
 	Email string `json:"email,omitempty"`
 	// User关联外键
-	UserID uint `json:"user_id,omitempty"`
+	// UserID uint `json:"user_id,omitempty"`
 }
 
 func (UserProfile) TableName() string {

@@ -19,11 +19,11 @@ RegisterUserService
 */
 func RegisterUserService(u *models.User) (*pkg.Token, pkg.Error) {
 	// 1. 检查用户是否已经存在
-	_, totalData, err := repository.GetAccount(u.Account)
+	totalData, err := repository.GetAccount(u.Account)
 	if err != nil {
 		return nil, pkg.NewErrorAutoMsg(pkg.CodeServerBusy).WithErr(err)
 	}
-	if totalData == 1 {
+	if totalData > 0 {
 		return nil, pkg.NewErrorAutoMsg(pkg.CodeUserExist)
 	}
 
@@ -38,15 +38,13 @@ func RegisterUserService(u *models.User) (*pkg.Token, pkg.Error) {
 	user.HashPassword()
 
 	// 3. 保存新用户到数据库中
-	if err := repository.RegisterUser(&user); err != nil {
+	userData, err := repository.RegisterUser(&user)
+	if err != nil {
 		return nil, pkg.NewErrorAutoMsg(pkg.CodeServerBusy).WithErr(err)
 	}
 
 	// 4. 获取新用户的ID
-	uId, err := repository.GetIDByAccount(u.Account)
-	if err != nil {
-		return nil, pkg.NewErrorAutoMsg(pkg.CodeServerBusy).WithErr(err)
-	}
+	uId := userData.ID
 
 	// 5. 生成认证令牌
 	token, err := pkg.GetToken(uId, u.Account)
@@ -74,14 +72,17 @@ func LoginUserService(u *models.User) (*pkg.Token, pkg.Error) {
 	u.HashPassword()
 
 	// 2. 检查用户是否已经存在
-	user, totalData, err := repository.GetAccount(u.Account)
+	totalData, err := repository.GetAccount(u.Account)
 	if err != nil {
 		return nil, pkg.NewErrorAutoMsg(pkg.CodeServerBusy).WithErr(err)
 	}
 	if totalData != 1 {
 		return nil, pkg.NewErrorAutoMsg(pkg.CodeUserNotExist)
 	}
-
+	user, err := repository.GetAccountPassword(u.Account, u.Password)
+	if err != nil {
+		return nil, pkg.NewErrorAutoMsg(pkg.CodeInvalidPassword)
+	}
 	// 3. 比较用户输入的账号和密码是否与数据库中的记录匹配
 	if user.Account != u.Account || user.Password != u.Password {
 		return nil, pkg.NewErrorAutoMsg(pkg.CodeInvalidPassword)

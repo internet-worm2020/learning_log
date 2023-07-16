@@ -14,14 +14,14 @@ RegisterUser
 
 @return: error 错误信息.
 */
-func RegisterUser(u *models.User) error {
+func RegisterUser(u *models.User) (*models.User, error) {
 	// 获取数据库连接
 	db := mysqlDB.GetDB()
 	// 将用户信息添加到数据库
 	if err := db.Create(u).Error; err != nil {
-		return sqlError(err)
+		return nil, sqlError(err)
 	}
-	return nil
+	return u, nil
 }
 
 /*
@@ -31,13 +31,11 @@ GetAccount
 
 @param: account string 账户名
 
-@return: *models.User 用户信息
-
 @return: int64 影响的行数
 
 @return: error 错误信息.
 */
-func GetAccount(account string) (*models.User, int64, error) {
+func GetAccount(account string) (int64, error) {
 	// 获取数据库连接
 	db := mysqlDB.GetDB()
 	// 定义一个用户变量
@@ -46,10 +44,37 @@ func GetAccount(account string) (*models.User, int64, error) {
 	db = db.Where("account=?", account).Find(&user)
 	// 如果查找出错，则返回错误信息
 	if db.Error != nil {
-		return nil, 0, sqlError(db.Error)
+		return 0, sqlError(db.Error)
 	}
 	// 返回用户信息和影响的行数
-	return &user, db.RowsAffected, nil
+	return db.RowsAffected, nil
+}
+
+/*
+GetAccountPassword
+
+@description: 根据账号和密码查询用户
+
+@param: account string 账户名
+
+@param: password string 密码
+
+@return: *models.User 用户信息
+
+@return: error 错误信息.
+*/
+func GetAccountPassword(account string, password string) (*models.User, error) {
+	// 获取数据库连接
+	db := mysqlDB.GetDB()
+	// 定义一个用户变量
+	var user models.User
+	// 根据账户名查找用户
+	db = db.Where("account=?", account).Or("password=?", password).Find(&user)
+	// 如果查找出错，则返回错误信息
+	if db.Error != nil {
+		return nil, sqlError(db.Error)
+	}
+	return &user, nil
 }
 
 /*
