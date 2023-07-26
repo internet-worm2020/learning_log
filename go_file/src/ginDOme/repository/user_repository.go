@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gindome/db/mysqlDB"
 	"gindome/models"
+	"github.com/internet-worm2020/go-pkg/log"
 )
 
 /*
@@ -196,12 +197,14 @@ func DeleteUser(uId uint)(error) {
 	}
 	// 要删除的数据是否唯一
 	if count >1 {
+		log.Error(fmt.Errorf("删除数据不唯一").Error())
 		return fmt.Errorf("删除数据不唯一")
 	}
 	// 删除数据
 	db.Delete(&user)
 	// 如果查找出错，则返回错误信息
 	if db.Error != nil {
+		log.Error(sqlError(db.Error).Error())
 		return sqlError(db.Error)
 	}
 	// 返回错误信息

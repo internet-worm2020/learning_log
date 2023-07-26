@@ -8,6 +8,7 @@ import (
 	log "gindome/logging"
 	"gindome/pkg/jobs"
 	"gindome/router"
+	logs "github.com/internet-worm2020/go-pkg/log"
 )
 
 func main() {
@@ -17,7 +18,8 @@ func main() {
 	// setting.Init(os.Args[1])
 	setting.Init("a")
 	// 2.初始化日志
-	log.Init()
+	// log.Init()
+	logs.Init(log.Adcc())
 	// 3.初始化mysql
 	mysqlDB.Init(setting.Conf.MySQLConfig)
 	// 4.初始化表结构

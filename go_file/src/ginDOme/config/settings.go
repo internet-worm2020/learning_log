@@ -25,6 +25,7 @@ type AppConfig struct {
 type LogConfig struct {
 	Level       string `mapstructure:"level"`         // 日志级别
 	WebLogName  string `mapstructure:"web_log_name"`  // Web 日志名称
+	WebLogErrorName  string `mapstructure:"web_log_error_name"`  // Web 错误日志名称
 	LogFilePath string `mapstructure:"log_file_path"` // 日志文件路径
 }
 
