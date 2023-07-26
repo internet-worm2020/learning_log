@@ -42,7 +42,7 @@ func GetToken(uid uint, account string) (*Token, error) {
 }
 
 // ParseToken 解析JWT令牌
-func ParseToken(tokenString string) (*Claims, Error) {
+func ParseToken(tokenString string) (*Claims, *Error) {
 	// 设置密钥
 	secretKey := []byte(setting.GetConf().JwtKey)
 	// 解析令牌

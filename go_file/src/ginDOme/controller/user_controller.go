@@ -136,27 +136,33 @@ func GetUserHandler(c *gin.Context) {
 	// 返回成功响应
 	pkg.ResponseSuccess(c, data)
 }
+
 /*
-@param: 
+@param:
 */
-func DeleteUserHandler(c *gin.Context){
+func DeleteUserHandler(c *gin.Context) {
 	// 获取签名的string
-	token:=pkg.Token{Token: strings.Split(c.GetHeader("Authorization")," ")[1]}
+	token := pkg.Token{Token: strings.Split(c.GetHeader("Authorization"), " ")[1]}
 	// 调用删除用户服务
-	data,err:=service.DeleteUserService(token)
+	err := service.DeleteUserService(token)
 	// 返回错误信息
-	if data==""{
-		pkg.ResponseErrorWithMsg(c,err.BusinessCode,err.Message)
+	if err != nil {
+		pkg.ResponseErrorWithMsg(c, err.BusinessCode, err.Message)
 		return
 	}
 	// 返回操作成功
-	pkg.ResponseError(c,pkg.CodeSuccess)
+	pkg.ResponseOperateSuccess(c)
 }
 
-func UpdateUserHandler(c *gin.Context){
+func UpdateUserHandler(c *gin.Context) {
 	// 获取签名的string
-	token:=pkg.Token{Token: strings.Split(c.GetHeader("Authorization")," ")[1]}
-	service.UpdateUserProfileService(token)
+	token := pkg.Token{Token: strings.Split(c.GetHeader("Authorization"), " ")[1]}
+	err := service.UpdateUserProfileService(token)
+	if err != nil {
+		pkg.ResponseErrorWithMsg(c, err.BusinessCode, err.Message)
+		return
+	}
+	pkg.ResponseOperateSuccess(c)
 }
 func A(c *gin.Context) {
 	redis0, _ := redis.GetRedis(0)

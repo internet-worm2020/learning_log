@@ -1,10 +1,10 @@
 package service
 
 import (
-	"fmt"
 	"gindome/models"
 	"gindome/pkg"
 	"gindome/repository"
+	"github.com/internet-worm2020/go-pkg/log"
 )
 
 /*
@@ -18,7 +18,7 @@ RegisterUserService
 
 @return: pkg.Error 错误信息.
 */
-func RegisterUserService(u *models.User) (*pkg.Token, pkg.Error) {
+func RegisterUserService(u *models.User) (*pkg.Token, *pkg.Error) {
 	// 检查用户是否已经存在
 	totalData, err := repository.GetAccount(u.Account)
 	if err != nil {
@@ -66,7 +66,7 @@ LoginUserService
 
 @return: pkg.Error 错误信息.
 */
-func LoginUserService(u *models.User) (*pkg.Token, pkg.Error) {
+func LoginUserService(u *models.User) (*pkg.Token, *pkg.Error) {
 	// 1. 哈希加密用户密码
 	u.HashPassword()
 
@@ -113,6 +113,7 @@ func GetUserByIdService(userId uint64) (*models.UserProfile, error) {
 	data, err := repository.GetUserById(userId)
 	// 2. 如果出现错误，返回错误信息
 	if err != nil {
+		log.Error(err.Error())
 		return nil, err
 	}
 	// 3. 返回用户信息和 nil
@@ -154,42 +155,44 @@ DeleteUserService
 
 @return: pkg.Error 错误信息
 */
-func DeleteUserService(token pkg.Token) (string, pkg.Error) {
+func DeleteUserService(token pkg.Token) *pkg.Error {
 	// 定义签名信息
 	var claims *pkg.Claims
 	// 定义用户id
 	var uId uint
 	// 定义自定义错误
-	var tokenErr pkg.Error
+	var tokenErr *pkg.Error
 	// 解析token获取签名信息
 	claims, tokenErr = pkg.ParseToken(token.Token)
 	// 签名是否解析成功
 	if claims == nil {
-		return "", tokenErr
+		return tokenErr
 	}
 	uId = claims.UId
 	// 调用数据操作删除用户数据
 	err := repository.DeleteUser(uId)
 	if err != nil {
-		return "", pkg.NewErrorAutoMsg(pkg.CodeServerBusy).WithErr(err)
+		return pkg.NewErrorAutoMsg(pkg.CodeServerBusy).WithErr(err)
 	}
-	return "ok", pkg.NewError(pkg.CodeSuccess, pkg.CodeSuccess.Msg())
+	return nil
 }
-func UpdateUserProfileService(token pkg.Token) {
+func UpdateUserProfileService(token pkg.Token) *pkg.Error {
 	// 定义签名信息
 	var claims *pkg.Claims
 	// 定义用户id
 	var uId uint
 	// 定义自定义错误
-	var tokenErr pkg.Error
+	var tokenErr *pkg.Error
 	// 解析token获取签名信息
 	claims, tokenErr = pkg.ParseToken(token.Token)
 	// 签名是否解析成功
-	// if claims == nil {
-	// 	return "",tokenErr
-	// }
+	if claims == nil {
+		return tokenErr
+	}
 	uId = claims.UId
-	a, b := repository.UpdateUserProfile(uId)
-	fmt.Println(a, b, tokenErr)
-
+	err := repository.UpdateUserProfile(uId)
+	if err != nil {
+		pkg.NewErrorAutoMsg(pkg.CodeServerBusy).WithErr(err)
+	}
+	return nil
 }

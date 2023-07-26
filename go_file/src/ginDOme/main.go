@@ -9,6 +9,7 @@ import (
 	"gindome/pkg/jobs"
 	"gindome/router"
 	logs "github.com/internet-worm2020/go-pkg/log"
+	"net/http"
 )
 
 func main() {
@@ -30,7 +31,8 @@ func main() {
 	jobs.InitJobs()
 	// 7.注册路由
 	r := router.InitRouter()
-	err := r.Run(fmt.Sprintf("127.0.0.1:%d", setting.Conf.Port))
+	// http.ListenAndServe(fmt.Sprintf("127.0.0.1:%d", setting.Conf.Port), r)
+	err := http.ListenAndServe(fmt.Sprintf("127.0.0.1:%d", setting.Conf.Port), r)
 	if err != nil {
 		return
 	}

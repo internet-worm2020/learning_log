@@ -15,7 +15,7 @@ InitRouter
 */
 func InitRouter() *gin.Engine {
 	// 1. 创建gin引擎
-	r := gin.Default()
+	r := gin.New()
 	// 2. 添加日志中间件
 	// r.Use(middleware.LoggerMiddleware())
 	r.Use(middleware.LoggerMiddleware1())

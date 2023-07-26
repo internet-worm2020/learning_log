@@ -12,16 +12,16 @@ import (
 type User struct {
 	gorm.Model `json:"-"`
 	// Account 登录账号
-	Account string `json:"account,omitempty" gorm:"unique;not null" validate:"required"`
+	Account string `json:"account" gorm:"unique;not null" validate:"required"`
 	// Password 登录密码
-	Password string `json:"password,omitempty" gorm:"not null" validate:"required"`
+	Password string `json:"password" gorm:"not null" validate:"required"`
 	// RePassword 校验登录密码
-	RePassword string `json:"re_password,omitempty" gorm:"-" validate:"eqfield=Password"`
+	RePassword string `json:"re_password" gorm:"-" validate:"eqfield=Password"`
 	// State 用户状态， -1 - 异常；0 - 锁定；1 - 正常；
-	State         int16 `json:"state,omitempty" gorm:"default:1"`
+	State         int16 `json:"state" gorm:"default:1"`
 	UserProfileID uint
 	// UserProfile 用户信息
-	UserProfile UserProfile `json:"user_profile,omitempty" gorm:"constraint:OnDelete:CASCADE;"`
+	UserProfile UserProfile `json:"user_profile" gorm:"constraint:OnDelete:CASCADE;"`
 }
 
 func (User) TableName() string {
@@ -40,19 +40,19 @@ func (u *User) HashPassword() {
 type UserProfile struct {
 	gorm.Model `json:"-"`
 	// 账号名称
-	Name string `json:"name,omitempty" gorm:"not null"`
+	Name string `json:"name" gorm:"not null"`
 	// 年龄
-	Age uint `json:"age,omitempty"`
+	Age uint `json:"age"`
 	// 性别
-	Sex uint8 `json:"sex,omitempty" gorm:"default:0"`
+	Sex uint8 `json:"sex" gorm:"default:0"`
 	// 手机号
-	Number string `json:"number,omitempty"`
+	Number string `json:"number"`
 	// 地址
-	Address string `json:"address,omitempty"`
+	Address string `json:"address"`
 	// 身份证号
-	IdCard string `json:"id_card,omitempty"`
+	IdCard string `json:"id_card"`
 	// 邮箱
-	Email string `json:"email,omitempty"`
+	Email string `json:"email"`
 	// User关联外键
 	// UserID uint `json:"user_id,omitempty"`
 }

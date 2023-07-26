@@ -21,6 +21,7 @@ func RegisterUser(u *models.User) (*models.User, error) {
 	db := mysqlDB.GetDB()
 	// 将用户信息添加到数据库
 	if err := db.Create(u).Error; err != nil {
+		log.Error(sqlError(err).Error())
 		return nil, sqlError(err)
 	}
 	return u, nil
@@ -46,6 +47,7 @@ func GetAccount(account string) (int64, error) {
 	db = db.Where("account=?", account).Find(&user)
 	// 如果查找出错，则返回错误信息
 	if db.Error != nil {
+		log.Error(sqlError(db.Error).Error())
 		return 0, sqlError(db.Error)
 	}
 	// 返回用户信息和影响的行数
@@ -74,6 +76,7 @@ func GetAccountPassword(account string, password string) (*models.User, error) {
 	db = db.Where("account=?", account).Or("password=?", password).Find(&user)
 	// 如果查找出错，则返回错误信息
 	if db.Error != nil {
+		log.Error(sqlError(db.Error).Error())
 		return nil, sqlError(db.Error)
 	}
 	return &user, nil
@@ -95,6 +98,7 @@ func GetIDByAccount(account string) (uint, error) {
 	var Id uint
 	// 根据账户名获取用户ID
 	if err := mysqlDB.GetDB().Table("user").Select("id").Where("account=?", account).Take(&Id).Error; err != nil {
+		log.Error(err.Error())
 		return 0, err
 	}
 	// 返回用户ID
@@ -116,7 +120,11 @@ func GetUserById(userId uint64) (*models.UserProfile, error) {
 	// 定义一个用户变量和用户信息变量
 	var user models.User
 	// 根据用户信息获取用户信息变量
-	mysqlDB.GetDB().Where("id=?",userId).Preload("UserProfile").Find(&user)
+
+	if err := mysqlDB.GetDB().Where("id=?", userId).Preload("UserProfile").Find(&user).Error; err != nil {
+		log.Error(err.Error())
+		return nil, err
+	}
 	// 返回用户信息变量
 	return &user.UserProfile, nil
 }
@@ -144,6 +152,7 @@ func GetUserConsistent(uId uint, uAccount string) (uint, string, error) {
 	}
 	// 查询用户数据是否一致
 	if err := mysqlDB.GetDB().Table("user").Select("id, account").Where("id = ? AND account = ?", uId, uAccount).Take(&user).Error; err != nil {
+		log.Error(err.Error())
 		return 0, "", err
 	}
 	// 返回用户ID和账户名
@@ -167,10 +176,14 @@ func GetUserList(page, size int) ([]*models.UserProfile, error) {
 	// 1. 创建一个空的用户列表
 	userList := make([]*models.UserProfile, 0, size)
 	// 2. 查询用户列表
-	err := mysqlDB.GetDB().Limit(size).Offset((page - 1) * size).Find(&userList).Error
+	if err := mysqlDB.GetDB().Limit(size).Offset((page - 1) * size).Find(&userList).Error; err != nil {
+		log.Error(err.Error())
+		return nil, err
+	}
 	// 3. 返回用户列表和错误信息
-	return userList, err
+	return userList, nil
 }
+
 /*
 DeleteUser
 
@@ -178,9 +191,9 @@ DeleteUser
 
 @param: uId uint 用户ID
 
-@retunr: error 错误信息.
+@return: error 错误信息.
 */
-func DeleteUser(uId uint)(error) {
+func DeleteUser(uId uint) error {
 	// 获取数据库连接
 	db := mysqlDB.GetDB()
 	// 定义一个用户变量
@@ -192,11 +205,12 @@ func DeleteUser(uId uint)(error) {
 	// 查询到多少数据
 	db.Model(&user).Count(&count)
 	// 要删除的数据是否存在
-	if count==0{
+	if count == 0 {
+		log.Error(fmt.Errorf("要删除数据不存在").Error())
 		return fmt.Errorf("要删除数据不存在")
 	}
 	// 要删除的数据是否唯一
-	if count >1 {
+	if count > 1 {
 		log.Error(fmt.Errorf("删除数据不唯一").Error())
 		return fmt.Errorf("删除数据不唯一")
 	}
@@ -211,11 +225,19 @@ func DeleteUser(uId uint)(error) {
 	return nil
 }
 
-func UpdateUserProfile(uId uint)(int64,error){
+func UpdateUserProfile(uId uint) error {
 	db := mysqlDB.GetDB()
 	var user models.User
-	// db.Where("id=?",uId).Preload("UserProfile").Find(&user)
-	db.Model(&user).Where("id=?",uId)
-	fmt.Println(user)
-	return 1,nil
+	var err error
+	err = db.Where("id=?", uId).Find(&user).Error
+	if err != nil {
+		log.Error(sqlError(db.Error).Error())
+		return sqlError(err)
+	}
+	err = db.Model(&user.UserProfile).Where("id=?", user.UserProfileID).Updates(map[string]interface{}{"age": 18, "sex": 0}).Error
+	if err != nil {
+		log.Error(sqlError(db.Error).Error())
+		return sqlError(err)
+	}
+	return nil
 }
