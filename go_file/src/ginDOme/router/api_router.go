@@ -15,10 +15,18 @@ import (
 @param: r *gin.Engine gin引擎.
 */
 func setupApiRouters(r *gin.Engine) {
+	// 注册
 	r.POST("/register", controller.RegisterHandler)
+	// 登录
 	r.POST("/login", controller.LoginHandler)
+	// 根据id查询用户详情信息
 	r.GET("/user/:id", controller.GetUserDetailHandler)
+	// 查询用户列表信息
 	r.GET("/user", controller.GetUserHandler)
+	// 根据id修改用户详情信息
+	r.PATCH("/user",controller.UpdateUserHandler)
+	// 根据id删除用户
+	r.DELETE("/user",controller.DeleteUserHandler)
 	r.GET("/a", controller.A)
 }
 

@@ -8,7 +8,7 @@ import (
 
 	mySql "gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
+	_"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 )
 
@@ -46,7 +46,7 @@ func Init(cfg *setting.MySQLConfig) {
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,
 		},
-		Logger: logger.Default.LogMode(logger.Info),
+		// Logger: logger.Default.LogMode(logger.Info),
 	})
 	if err != nil {
 		panic(fmt.Sprintf("链接数据库失败%s", err.Error()))
@@ -77,7 +77,7 @@ GetDB
 @return: *gorm.DB 数据库连接.
 */
 func GetDB() *gorm.DB {
-	return dbConn.Debug()
+	return dbConn
 }
 
 /*

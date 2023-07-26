@@ -7,6 +7,7 @@ import (
 	"gindome/pkg"
 	"gindome/service"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -135,7 +136,28 @@ func GetUserHandler(c *gin.Context) {
 	// 返回成功响应
 	pkg.ResponseSuccess(c, data)
 }
+/*
+@param: 
+*/
+func DeleteUserHandler(c *gin.Context){
+	// 获取签名的string
+	token:=pkg.Token{Token: strings.Split(c.GetHeader("Authorization")," ")[1]}
+	// 调用删除用户服务
+	data,err:=service.DeleteUserService(token)
+	// 返回错误信息
+	if data==""{
+		pkg.ResponseErrorWithMsg(c,err.BusinessCode,err.Message)
+		return
+	}
+	// 返回操作成功
+	pkg.ResponseError(c,pkg.CodeSuccess)
+}
 
+func UpdateUserHandler(c *gin.Context){
+	// 获取签名的string
+	token:=pkg.Token{Token: strings.Split(c.GetHeader("Authorization")," ")[1]}
+	service.UpdateUserProfileService(token)
+}
 func A(c *gin.Context) {
 	redis0, _ := redis.GetRedis(0)
 	redis0.Set("username", "zhangsan", 0).Err()

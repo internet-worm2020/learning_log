@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"gindome/models"
 	"gindome/pkg"
 	"gindome/repository"
@@ -18,16 +19,17 @@ RegisterUserService
 @return: pkg.Error 错误信息.
 */
 func RegisterUserService(u *models.User) (*pkg.Token, pkg.Error) {
-	// 1. 检查用户是否已经存在
+	// 检查用户是否已经存在
 	totalData, err := repository.GetAccount(u.Account)
 	if err != nil {
 		return nil, pkg.NewErrorAutoMsg(pkg.CodeServerBusy).WithErr(err)
 	}
+	// 查询到的数据是否大于0
 	if totalData > 0 {
 		return nil, pkg.NewErrorAutoMsg(pkg.CodeUserExist)
 	}
 
-	// 2. 创建新用户
+	// 创建新用户
 	user := models.User{
 		Account:  u.Account,
 		Password: u.Password,
@@ -37,17 +39,14 @@ func RegisterUserService(u *models.User) (*pkg.Token, pkg.Error) {
 	}
 	user.HashPassword()
 
-	// 3. 保存新用户到数据库中
+	// 保存新用户到数据库中
 	userData, err := repository.RegisterUser(&user)
 	if err != nil {
 		return nil, pkg.NewErrorAutoMsg(pkg.CodeServerBusy).WithErr(err)
 	}
 
-	// 4. 获取新用户的ID
-	uId := userData.ID
-
-	// 5. 生成认证令牌
-	token, err := pkg.GetToken(uId, u.Account)
+	// 4. 生成认证令牌
+	token, err := pkg.GetToken(userData.ID, userData.Account)
 	if err != nil {
 		return nil, pkg.NewErrorAutoMsg(pkg.CodeServerBusy).WithErr(err)
 	}
@@ -79,11 +78,12 @@ func LoginUserService(u *models.User) (*pkg.Token, pkg.Error) {
 	if totalData != 1 {
 		return nil, pkg.NewErrorAutoMsg(pkg.CodeUserNotExist)
 	}
+	// 3. 根据账号和密码查询用户
 	user, err := repository.GetAccountPassword(u.Account, u.Password)
 	if err != nil {
 		return nil, pkg.NewErrorAutoMsg(pkg.CodeInvalidPassword)
 	}
-	// 3. 比较用户输入的账号和密码是否与数据库中的记录匹配
+	// 4. 比较用户输入的账号和密码是否与数据库中的记录匹配
 	if user.Account != u.Account || user.Password != u.Password {
 		return nil, pkg.NewErrorAutoMsg(pkg.CodeInvalidPassword)
 	}
@@ -141,4 +141,55 @@ func GetUserListService(page, size int) ([]*models.UserProfile, error) {
 	}
 	// 3. 返回用户列表和 nil
 	return data, nil
+}
+
+/*
+DeleteUserService
+
+@description: 删除用户信息服务
+
+@param: token pkg.Token token信息
+
+@return: string 成功信息
+
+@return: pkg.Error 错误信息
+*/
+func DeleteUserService(token pkg.Token) (string, pkg.Error) {
+	// 定义签名信息
+	var claims *pkg.Claims
+	// 定义用户id
+	var uId uint
+	// 定义自定义错误
+	var tokenErr pkg.Error
+	// 解析token获取签名信息
+	claims, tokenErr = pkg.ParseToken(token.Token)
+	// 签名是否解析成功
+	if claims == nil {
+		return "", tokenErr
+	}
+	uId = claims.UId
+	// 调用数据操作删除用户数据
+	err := repository.DeleteUser(uId)
+	if err != nil {
+		return "", pkg.NewErrorAutoMsg(pkg.CodeServerBusy).WithErr(err)
+	}
+	return "ok", pkg.NewError(pkg.CodeSuccess, pkg.CodeSuccess.Msg())
+}
+func UpdateUserProfileService(token pkg.Token) {
+	// 定义签名信息
+	var claims *pkg.Claims
+	// 定义用户id
+	var uId uint
+	// 定义自定义错误
+	var tokenErr pkg.Error
+	// 解析token获取签名信息
+	claims, tokenErr = pkg.ParseToken(token.Token)
+	// 签名是否解析成功
+	// if claims == nil {
+	// 	return "",tokenErr
+	// }
+	uId = claims.UId
+	a, b := repository.UpdateUserProfile(uId)
+	fmt.Println(a, b, tokenErr)
+
 }

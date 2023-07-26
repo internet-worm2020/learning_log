@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"gindome/db/mysqlDB"
 	"gindome/models"
 )
@@ -113,17 +114,10 @@ GetUserById
 func GetUserById(userId uint64) (*models.UserProfile, error) {
 	// 定义一个用户变量和用户信息变量
 	var user models.User
-	var userProfile models.UserProfile
-	// 根据用户ID获取用户信息
-	if err := mysqlDB.GetDB().Where("id=?", userId).Take(&user).Error; err != nil {
-		return nil, err
-	}
 	// 根据用户信息获取用户信息变量
-	if err := mysqlDB.GetDB().Model(&user).Association("UserProfile").Find(&userProfile); err != nil {
-		return nil, err
-	}
+	mysqlDB.GetDB().Where("id=?",userId).Preload("UserProfile").Find(&user)
 	// 返回用户信息变量
-	return &userProfile, nil
+	return &user.UserProfile, nil
 }
 
 /*
@@ -175,4 +169,50 @@ func GetUserList(page, size int) ([]*models.UserProfile, error) {
 	err := mysqlDB.GetDB().Limit(size).Offset((page - 1) * size).Find(&userList).Error
 	// 3. 返回用户列表和错误信息
 	return userList, err
+}
+/*
+DeleteUser
+
+@description: 删除用户信息
+
+@param: uId uint 用户ID
+
+@retunr: error 错误信息.
+*/
+func DeleteUser(uId uint)(error) {
+	// 获取数据库连接
+	db := mysqlDB.GetDB()
+	// 定义一个用户变量
+	var user models.User
+	// 根据id查找用户
+	db.Where("id=?", uId)
+	// 定义一个数量
+	var count int64
+	// 查询到多少数据
+	db.Model(&user).Count(&count)
+	// 要删除的数据是否存在
+	if count==0{
+		return fmt.Errorf("要删除数据不存在")
+	}
+	// 要删除的数据是否唯一
+	if count >1 {
+		return fmt.Errorf("删除数据不唯一")
+	}
+	// 删除数据
+	db.Delete(&user)
+	// 如果查找出错，则返回错误信息
+	if db.Error != nil {
+		return sqlError(db.Error)
+	}
+	// 返回错误信息
+	return nil
+}
+
+func UpdateUserProfile(uId uint)(int64,error){
+	db := mysqlDB.GetDB()
+	var user models.User
+	// db.Where("id=?",uId).Preload("UserProfile").Find(&user)
+	db.Model(&user).Where("id=?",uId)
+	fmt.Println(user)
+	return 1,nil
 }
