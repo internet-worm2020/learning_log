@@ -61,3 +61,25 @@ func loginUserValid(account, password string) error {
 	// 4. 返回错误信息
 	return err
 }
+
+func UserProfileValid(u *models.UserProfile) error {
+	// 1. 创建一个validator实例
+	var valid *validator.Validate = validator.New()
+
+	// 2. 创建一个用户实例
+	var user *models.UserProfile = &models.UserProfile{
+		Name: u.Name,
+		Age: u.Age,
+		Sex: u.Sex,
+		Number: u.Number,
+		Address: u.Address,
+		IdCard: u.IdCard,
+		Email: u.Email,
+	}
+
+	// 3. 校验用户实例
+	err := valid.Struct(user)
+
+	// 4. 返回错误信息
+	return err
+}

@@ -57,7 +57,7 @@ func AuthMiddleware() gin.HandlerFunc {
 }
 
 // 解析 token 并验证是否有效
-func parseToken(authHeader string) (*pkg.Claims, pkg.Error) {
+func parseToken(authHeader string) (*pkg.Claims, *pkg.Error) {
 	// 检查 token 格式是否正确
 	tokenSlice := strings.SplitN(authHeader, " ", 2)
 	if len(tokenSlice) != 2 || tokenSlice[0] != "Bearer" {

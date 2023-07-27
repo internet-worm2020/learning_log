@@ -126,7 +126,7 @@ func GetUserById(userId uint64) (*models.UserProfile, error) {
 		return nil, err
 	}
 	// 返回用户信息变量
-	return &user.UserProfile, nil
+	return user.UserProfile, nil
 }
 
 /*
@@ -198,24 +198,25 @@ func DeleteUser(uId uint) error {
 	db := mysqlDB.GetDB()
 	// 定义一个用户变量
 	var user models.User
+	// 定义一个用户详情变量
+	var userProfile models.UserProfile
 	// 根据id查找用户
-	db.Where("id=?", uId)
+	userDB:=db.Where("id=?", uId)
+	userDB.Find(&user)
+	// 根据关联id查找详情
+	userProfilDB:=db.Where("id=?",user.UserProfileID)
 	// 定义一个数量
 	var count int64
 	// 查询到多少数据
-	db.Model(&user).Count(&count)
+	userDB.Count(&count)
 	// 要删除的数据是否存在
 	if count == 0 {
 		log.Error(fmt.Errorf("要删除数据不存在").Error())
 		return fmt.Errorf("要删除数据不存在")
 	}
-	// 要删除的数据是否唯一
-	if count > 1 {
-		log.Error(fmt.Errorf("删除数据不唯一").Error())
-		return fmt.Errorf("删除数据不唯一")
-	}
 	// 删除数据
-	db.Delete(&user)
+	userDB.Delete(&user)
+	userProfilDB.Delete(&userProfile)
 	// 如果查找出错，则返回错误信息
 	if db.Error != nil {
 		log.Error(sqlError(db.Error).Error())
@@ -225,16 +226,32 @@ func DeleteUser(uId uint) error {
 	return nil
 }
 
-func UpdateUserProfile(uId uint) error {
+/*
+UpdateUserProfile
+
+@description: 修改用户详情
+
+@param: uId uint 用户ID
+
+@param: userProfile *models.UserProfile 提交的用户详情信息
+
+@return: error 错误信息.
+*/
+func UpdateUserProfile(uId uint,userProfile *models.UserProfile) error {
+	// 获取数据库链接
 	db := mysqlDB.GetDB()
+	// 定义user变量
 	var user models.User
+	// 定义错误
 	var err error
+	// 根据id查询用户信息
 	err = db.Where("id=?", uId).Find(&user).Error
 	if err != nil {
 		log.Error(sqlError(db.Error).Error())
 		return sqlError(err)
 	}
-	err = db.Model(&user.UserProfile).Where("id=?", user.UserProfileID).Updates(map[string]interface{}{"age": 18, "sex": 0}).Error
+	// 根据关联主键修改用户详情信息
+	err = db.Model(&user.UserProfile).Where("id=?", user.UserProfileID).Updates(userProfile.ToMap()).Error
 	if err != nil {
 		log.Error(sqlError(db.Error).Error())
 		return sqlError(err)

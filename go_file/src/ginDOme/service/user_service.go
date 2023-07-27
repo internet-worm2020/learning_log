@@ -33,7 +33,7 @@ func RegisterUserService(u *models.User) (*pkg.Token, *pkg.Error) {
 	user := models.User{
 		Account:  u.Account,
 		Password: u.Password,
-		UserProfile: models.UserProfile{
+		UserProfile: &models.UserProfile{
 			Name: u.Account,
 		},
 	}
@@ -176,7 +176,19 @@ func DeleteUserService(token pkg.Token) *pkg.Error {
 	}
 	return nil
 }
-func UpdateUserProfileService(token pkg.Token) *pkg.Error {
+
+/*
+UpdateUserProfileService
+
+@description: 更新用户详情服务
+
+@param: token pkg.Token token信息
+
+@param: userProfile *models.UserProfile 用户提交的修改信息
+
+@return: pkg.Error 错误信息
+*/
+func UpdateUserProfileService(token pkg.Token,userProfile *models.UserProfile) *pkg.Error {
 	// 定义签名信息
 	var claims *pkg.Claims
 	// 定义用户id
@@ -189,8 +201,10 @@ func UpdateUserProfileService(token pkg.Token) *pkg.Error {
 	if claims == nil {
 		return tokenErr
 	}
+	// 获取令牌内用户ID
 	uId = claims.UId
-	err := repository.UpdateUserProfile(uId)
+	// 调用修改用户详情
+	err := repository.UpdateUserProfile(uId,userProfile)
 	if err != nil {
 		pkg.NewErrorAutoMsg(pkg.CodeServerBusy).WithErr(err)
 	}

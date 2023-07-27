@@ -157,8 +157,22 @@ func DeleteUserHandler(c *gin.Context) {
 func UpdateUserHandler(c *gin.Context) {
 	// 获取签名的string
 	token := pkg.Token{Token: strings.Split(c.GetHeader("Authorization"), " ")[1]}
-	err := service.UpdateUserProfileService(token)
-	if err != nil {
+
+	// 注册用户
+	userProfile:=&models.UserProfile{}
+
+	// 检查参数是否合法
+	if err := c.ShouldBind(userProfile); err != nil {
+			pkg.ResponseError(c, pkg.CodeInvalidParam)
+			return
+		}
+		fmt.Println(userProfile)
+	// 检查账户详情是否合法
+	if err := UserProfileValid(userProfile); err != nil {
+			pkg.ResponseError(c, pkg.CodeInvalidParam)
+			return
+		}
+	if err := service.UpdateUserProfileService(token,userProfile);err != nil {
 		pkg.ResponseErrorWithMsg(c, err.BusinessCode, err.Message)
 		return
 	}
