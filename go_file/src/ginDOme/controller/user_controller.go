@@ -93,7 +93,7 @@ func LoginHandler(c *gin.Context) {
 func GetUserDetailHandler(c *gin.Context) {
 	// 从URL参数中获取用户ID
 	userIdStr := c.Param("id")
-	// 将字符串类型的用户ID转换为uint64类型
+	// 将字符串类型的用户ID转换为uint类型
 	userIdInt, err := strconv.ParseUint(userIdStr, 10, 64)
 	if err != nil {
 		// 如果转换失败，返回参数错误
@@ -101,7 +101,7 @@ func GetUserDetailHandler(c *gin.Context) {
 	}
 
 	// 根据用户ID获取用户信息
-	data, err := service.GetUserByIdService(userIdInt)
+	data, err := service.GetUserByIdService(uint(userIdInt))
 	if err != nil {
 		// 如果获取用户信息失败，返回服务器繁忙错误
 		pkg.ResponseError(c, pkg.CodeServerBusy)
@@ -159,28 +159,31 @@ func UpdateUserHandler(c *gin.Context) {
 	token := pkg.Token{Token: strings.Split(c.GetHeader("Authorization"), " ")[1]}
 
 	// 注册用户
-	userProfile:=&models.UserProfile{}
+	userProfile := &models.UserProfile{}
 
 	// 检查参数是否合法
 	if err := c.ShouldBind(userProfile); err != nil {
-			pkg.ResponseError(c, pkg.CodeInvalidParam)
-			return
-		}
-		fmt.Println(userProfile)
+		pkg.ResponseError(c, pkg.CodeInvalidParam)
+		return
+	}
+	fmt.Println(userProfile)
 	// 检查账户详情是否合法
 	if err := UserProfileValid(userProfile); err != nil {
-			pkg.ResponseError(c, pkg.CodeInvalidParam)
-			return
-		}
-	if err := service.UpdateUserProfileService(token,userProfile);err != nil {
+		pkg.ResponseError(c, pkg.CodeInvalidParam)
+		return
+	}
+	if err := service.UpdateUserProfileService(token, userProfile); err != nil {
 		pkg.ResponseErrorWithMsg(c, err.BusinessCode, err.Message)
 		return
 	}
 	pkg.ResponseOperateSuccess(c)
 }
 func A(c *gin.Context) {
+	a := models.User{}
+	a.GetAllUser(1, 10)
 	redis0, _ := redis.GetRedis(0)
 	redis0.Set("username", "zhangsan", 0).Err()
 	username, _ := redis0.Get("username").Result()
 	fmt.Println(username) // zhangsan
+	// pkg.ResponseSuccess(c, a.GetUser())
 }

@@ -108,7 +108,7 @@ GetUserByIdService
 
 @return: error 错误信息.
 */
-func GetUserByIdService(userId uint64) (*models.UserProfile, error) {
+func GetUserByIdService(userId uint) (*models.UserProfile, error) {
 	// 1. 调用 repository 层获取用户信息
 	data, err := repository.GetUserById(userId)
 	// 2. 如果出现错误，返回错误信息
@@ -133,7 +133,7 @@ GetUserListService
 
 @return: error 错误信息.
 */
-func GetUserListService(page, size int) ([]*models.UserProfile, error) {
+func GetUserListService(page, size int) ([]*models.User, error) {
 	// 1. 调用 repository 层获取用户列表
 	data, err := repository.GetUserList(page, size)
 	// 2. 如果出错，返回错误信息
@@ -188,7 +188,7 @@ UpdateUserProfileService
 
 @return: pkg.Error 错误信息
 */
-func UpdateUserProfileService(token pkg.Token,userProfile *models.UserProfile) *pkg.Error {
+func UpdateUserProfileService(token pkg.Token, userProfile *models.UserProfile) *pkg.Error {
 	// 定义签名信息
 	var claims *pkg.Claims
 	// 定义用户id
@@ -204,7 +204,7 @@ func UpdateUserProfileService(token pkg.Token,userProfile *models.UserProfile) *
 	// 获取令牌内用户ID
 	uId = claims.UId
 	// 调用修改用户详情
-	err := repository.UpdateUserProfile(uId,userProfile)
+	err := repository.UpdateUserProfile(uId, userProfile)
 	if err != nil {
 		pkg.NewErrorAutoMsg(pkg.CodeServerBusy).WithErr(err)
 	}

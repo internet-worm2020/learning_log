@@ -1,6 +1,6 @@
-package mysqlDB
+package models
 
-import "gindome/models"
+import "gindome/db/mysqlDB"
 
 /*
 AutoMigrateDB
@@ -9,10 +9,10 @@ AutoMigrateDB
 */
 func AutoMigrateDB() {
 	// 1. 获取数据库连接
-	db := GetDB()
+	db := mysqlDB.GetDB()
 	// 2. 自动迁移用户和用户资料表
 	db.AutoMigrate(
-		&models.User{},
-		&models.UserProfile{},
+		&User{},
+		&UserProfile{},
 	)
 }

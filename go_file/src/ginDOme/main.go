@@ -6,6 +6,7 @@ import (
 	"gindome/db/mysqlDB"
 	"gindome/db/redis"
 	log "gindome/logging"
+	"gindome/models"
 	"gindome/pkg/jobs"
 	"gindome/router"
 	logs "github.com/internet-worm2020/go-pkg/log"
@@ -24,7 +25,7 @@ func main() {
 	// 3.初始化mysql
 	mysqlDB.Init(setting.Conf.MySQLConfig)
 	// 4.初始化表结构
-	mysqlDB.AutoMigrateDB()
+	models.AutoMigrateDB()
 	// 5.初始化redis
 	redis.Init(setting.Conf.RedisConfig)
 	// 6.初始化定时任务

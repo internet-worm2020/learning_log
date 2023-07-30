@@ -5,6 +5,7 @@ import (
 	"gindome/db/mysqlDB"
 	"gindome/models"
 	"github.com/internet-worm2020/go-pkg/log"
+	"gorm.io/gorm"
 )
 
 /*
@@ -17,14 +18,13 @@ RegisterUser
 @return: error 错误信息.
 */
 func RegisterUser(u *models.User) (*models.User, error) {
-	// 获取数据库连接
-	db := mysqlDB.GetDB()
-	// 将用户信息添加到数据库
-	if err := db.Create(u).Error; err != nil {
+	// 调用user内置添加方法
+	user, err := u.Create()
+	if err != nil {
 		log.Error(sqlError(err).Error())
 		return nil, sqlError(err)
 	}
-	return u, nil
+	return user, nil
 }
 
 /*
@@ -116,12 +116,12 @@ GetUserById
 
 @return: error 错误信息.
 */
-func GetUserById(userId uint64) (*models.UserProfile, error) {
+func GetUserById(userId uint) (*models.UserProfile, error) {
 	// 定义一个用户变量和用户信息变量
-	var user models.User
+	var user *models.User = &models.User{Model: gorm.Model{ID: userId}}
 	// 根据用户信息获取用户信息变量
-
-	if err := mysqlDB.GetDB().Where("id=?", userId).Preload("UserProfile").Find(&user).Error; err != nil {
+	user, err := user.GetUser()
+	if err != nil {
 		log.Error(err.Error())
 		return nil, err
 	}
@@ -168,15 +168,15 @@ GetUserList
 
 @param: size int 分页大小
 
-@return: []*models.UserProfile 用户列表
+@return: []*models.User 用户列表
 
 @return: error 错误信息.
 */
-func GetUserList(page, size int) ([]*models.UserProfile, error) {
-	// 1. 创建一个空的用户列表
-	userList := make([]*models.UserProfile, 0, size)
+func GetUserList(page, size int) ([]*models.User, error) {
+	var user models.User = models.User{}
+	userList, err := user.GetAllUser(page, size)
 	// 2. 查询用户列表
-	if err := mysqlDB.GetDB().Limit(size).Offset((page - 1) * size).Find(&userList).Error; err != nil {
+	if err != nil {
 		log.Error(err.Error())
 		return nil, err
 	}
@@ -201,10 +201,10 @@ func DeleteUser(uId uint) error {
 	// 定义一个用户详情变量
 	var userProfile models.UserProfile
 	// 根据id查找用户
-	userDB:=db.Where("id=?", uId)
+	userDB := db.Where("id=?", uId)
 	userDB.Find(&user)
 	// 根据关联id查找详情
-	userProfilDB:=db.Where("id=?",user.UserProfileID)
+	userProfilDB := db.Where("id=?", user.UserProfileID)
 	// 定义一个数量
 	var count int64
 	// 查询到多少数据
@@ -237,7 +237,7 @@ UpdateUserProfile
 
 @return: error 错误信息.
 */
-func UpdateUserProfile(uId uint,userProfile *models.UserProfile) error {
+func UpdateUserProfile(uId uint, userProfile *models.UserProfile) error {
 	// 获取数据库链接
 	db := mysqlDB.GetDB()
 	// 定义user变量

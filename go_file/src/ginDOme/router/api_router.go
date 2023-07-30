@@ -19,14 +19,8 @@ func setupApiRouters(r *gin.Engine) {
 	r.POST("/register", controller.RegisterHandler)
 	// 登录
 	r.POST("/login", controller.LoginHandler)
-	// 根据id查询用户详情信息
-	r.GET("/user/:id", controller.GetUserDetailHandler)
-	// 查询用户列表信息
-	r.GET("/user", controller.GetUserHandler)
-	// 根据id修改用户详情信息
-	r.PATCH("/user",controller.UpdateUserHandler)
-	// 根据id删除用户
-	r.DELETE("/user",controller.DeleteUserHandler)
+	// 用户模块路由
+	userApiRoute(r)
 	r.GET("/a", controller.A)
 }
 

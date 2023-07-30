@@ -15,8 +15,8 @@ import (
 
 * @param: rePassword string 重复密码
 
- * @return: error 错误信息.
- */
+  - @return: error 错误信息.
+*/
 func registerUserValid(account, password, rePassword string) error {
 	// 1. 创建一个validator实例
 	var valid *validator.Validate = validator.New()
@@ -42,8 +42,8 @@ func registerUserValid(account, password, rePassword string) error {
 
 * @param: password string 密码
 
- * @return: error 错误信息.
- */
+  - @return: error 错误信息.
+*/
 func loginUserValid(account, password string) error {
 	// 1. 创建一个validator实例
 	var valid *validator.Validate = validator.New()
@@ -68,13 +68,13 @@ func UserProfileValid(u *models.UserProfile) error {
 
 	// 2. 创建一个用户实例
 	var user *models.UserProfile = &models.UserProfile{
-		Name: u.Name,
-		Age: u.Age,
-		Sex: u.Sex,
-		Number: u.Number,
+		Name:    u.Name,
+		Age:     u.Age,
+		Sex:     u.Sex,
+		Number:  u.Number,
 		Address: u.Address,
-		IdCard: u.IdCard,
-		Email: u.Email,
+		IdCard:  u.IdCard,
+		Email:   u.Email,
 	}
 
 	// 3. 校验用户实例

@@ -1,9 +1,11 @@
 package middleware
+
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/internet-worm2020/go-pkg/log"
 	"time"
 )
+
 func LoggerMiddleware1() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 开始时间
@@ -23,10 +25,10 @@ func LoggerMiddleware1() gin.HandlerFunc {
 		// // 请求ip
 		clientIP := c.ClientIP()
 		log.Info("999",
-		log.Int("status_code",statusCode),
-		log.Float64("latency_time", latencyTime),
-		log.String("client_ip",clientIP),
-		log.String("req_uri",      reqUrl),
-		log.String("req_method",   reqMethod))
+			log.Int("status_code", statusCode),
+			log.Float64("latency_time", latencyTime),
+			log.String("client_ip", clientIP),
+			log.String("req_uri", reqUrl),
+			log.String("req_method", reqMethod))
 	}
 }

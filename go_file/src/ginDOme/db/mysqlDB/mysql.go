@@ -8,7 +8,7 @@ import (
 
 	mySql "gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	_"gorm.io/gorm/logger"
+	_ "gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 )
 
