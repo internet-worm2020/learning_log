@@ -1,10 +1,12 @@
 package middleware
 
 import (
+	"gindome/controller"
 	"gindome/pkg"
 	"gindome/repository"
-	"github.com/gin-gonic/gin"
 	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
 // AuthMiddleware 基于JWT的认证中间件
@@ -23,7 +25,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		// 校验是否携带token
 		authHeader := c.Request.Header.Get("Authorization")
 		if authHeader == "" {
-			pkg.ResponseError(c, pkg.CodeNeedLogin)
+			controller.ResponseError(c, pkg.CodeNeedLogin)
 			c.Abort()
 			return
 		}
@@ -31,7 +33,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		// 解析 Authorization 头并校验 token 是否正确
 		token, pkgErr := parseToken(authHeader)
 		if token == nil {
-			pkg.ResponseErrorWithMsg(c, pkgErr.BusinessCode, pkgErr.Message)
+			controller.ResponseErrorWithMsg(c, pkgErr.BusinessCode, pkgErr.Message)
 			c.Abort()
 			return
 		}
@@ -39,13 +41,13 @@ func AuthMiddleware() gin.HandlerFunc {
 		id, account, err := repository.GetUserConsistent(token.UId, token.Account)
 		if err != nil {
 			pkgErr := pkg.NewErrorAutoMsg(pkg.CodeSuccess).WithErr(err)
-			pkg.ResponseErrorWithMsg(c, pkgErr.BusinessCode, pkgErr.Message)
+			controller.ResponseErrorWithMsg(c, pkgErr.BusinessCode, pkgErr.Message)
 			c.Abort()
 			return
 		}
 		// 校验token中的uId和account是否与获取到的用户信息一致
 		if id != token.UId || account != token.Account {
-			pkg.ResponseError(c, pkg.CodeWrongCredentials)
+			controller.ResponseError(c, pkg.CodeWrongCredentials)
 			c.Abort()
 			return
 		}

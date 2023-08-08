@@ -1,17 +1,18 @@
-package pkg
+package controller
 
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"gindome/pkg"
 )
 
 type ResponseData struct {
-	Code ResCode     `json:"code"`
+	Code pkg.ResCode     `json:"code"`
 	Msg  interface{} `json:"msg"`
 	Data interface{} `json:"data,omitempty"`
 }
 
-func ResponseError(c *gin.Context, code ResCode) {
+func ResponseError(c *gin.Context, code pkg.ResCode) {
 	c.JSON(http.StatusOK, &ResponseData{
 		Code: code,
 		Msg:  code.Msg(),
@@ -19,7 +20,7 @@ func ResponseError(c *gin.Context, code ResCode) {
 	})
 }
 
-func ResponseErrorWithMsg(c *gin.Context, code ResCode, msg interface{}) {
+func ResponseErrorWithMsg(c *gin.Context, code pkg.ResCode, msg interface{}) {
 	c.JSON(http.StatusOK, &ResponseData{
 		Code: code,
 		Msg:  msg,
@@ -29,15 +30,15 @@ func ResponseErrorWithMsg(c *gin.Context, code ResCode, msg interface{}) {
 
 func ResponseSuccess(c *gin.Context, data interface{}) {
 	c.JSON(http.StatusOK, &ResponseData{
-		Code: CodeSuccess,
-		Msg:  CodeSuccess.Msg(),
+		Code: pkg.CodeSuccess,
+		Msg:  pkg.CodeSuccess.Msg(),
 		Data: data,
 	})
 }
 func ResponseOperateSuccess(c *gin.Context) {
 	c.JSON(http.StatusOK, &ResponseData{
-		Code: CodeSuccess,
-		Msg:  CodeSuccess.Msg(),
+		Code: pkg.CodeSuccess,
+		Msg:  pkg.CodeSuccess.Msg(),
 		Data: nil,
 	})
 }
