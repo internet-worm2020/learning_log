@@ -29,21 +29,21 @@ func RegisterHandler(c *gin.Context) {
 
 	// 检查参数是否合法
 	if err := c.ShouldBind(u); err != nil {
-		pkg.ResponseError(c, pkg.CodeInvalidParam)
+		ResponseError(c, pkg.CodeInvalidParam)
 		return
 	}
 
 	// 检查账户是否合法
 	if err := registerUserValid(u.Account, u.Password, u.RePassword); err != nil {
-		pkg.ResponseError(c, pkg.CodeInvalidParam)
+		ResponseError(c, pkg.CodeInvalidParam)
 		return
 	}
 	data, err := service.RegisterUserService(u)
 	if data == nil {
-		pkg.ResponseErrorWithMsg(c, err.BusinessCode, err.Message)
+		ResponseErrorWithMsg(c, err.BusinessCode, err.Message)
 		return
 	}
-	pkg.ResponseSuccess(c, data)
+	ResponseSuccess(c, data)
 }
 
 // LoginHandler 登录账号
@@ -62,23 +62,23 @@ func LoginHandler(c *gin.Context) {
 	// 检查参数是否合法
 	if err := c.ShouldBind(u); err != nil {
 		fmt.Println(err.Error())
-		pkg.ResponseError(c, pkg.CodeInvalidParam)
+		ResponseError(c, pkg.CodeInvalidParam)
 		return
 	}
 
 	// 检查账户是否合法
 	if err := loginUserValid(u.Account, u.Password); err != nil {
-		pkg.ResponseError(c, pkg.CodeInvalidParam)
+		ResponseError(c, pkg.CodeInvalidParam)
 		return
 	}
 
 	// 登录用户
 	data, err := service.LoginUserService(u)
 	if data == nil {
-		pkg.ResponseErrorWithMsg(c, err.BusinessCode, err.Message)
+		ResponseErrorWithMsg(c, err.BusinessCode, err.Message)
 		return
 	}
-	pkg.ResponseSuccess(c, data)
+	ResponseSuccess(c, data)
 }
 
 // GetUserDetailHandler 获取用户信息
@@ -93,22 +93,22 @@ func LoginHandler(c *gin.Context) {
 func GetUserDetailHandler(c *gin.Context) {
 	// 从URL参数中获取用户ID
 	userIdStr := c.Param("id")
-	// 将字符串类型的用户ID转换为uint类型
+	// 将字符串类型的用户ID转换为uint64类型
 	userIdInt, err := strconv.ParseUint(userIdStr, 10, 64)
 	if err != nil {
 		// 如果转换失败，返回参数错误
-		pkg.ResponseError(c, pkg.CodeInvalidParam)
+		ResponseError(c, pkg.CodeInvalidParam)
 	}
 
 	// 根据用户ID获取用户信息
-	data, err := service.GetUserByIdService(uint(userIdInt))
+	data, err := service.GetUserByIdService(userIdInt)
 	if err != nil {
 		// 如果获取用户信息失败，返回服务器繁忙错误
-		pkg.ResponseError(c, pkg.CodeServerBusy)
+		ResponseError(c, pkg.CodeServerBusy)
 		return
 	}
 	// 返回用户信息
-	pkg.ResponseSuccess(c, data)
+	ResponseSuccess(c, data)
 }
 
 // GetUserHandler 处理获取用户列表的请求
@@ -125,16 +125,16 @@ func GetUserDetailHandler(c *gin.Context) {
 //	@Router			/user [get]
 func GetUserHandler(c *gin.Context) {
 	// 获取分页信息
-	page, size := pkg.GetPageInfo(c)
+	page, size := GetPageInfo(c)
 	// 调用 service 层获取用户列表
 	data, err := service.GetUserListService(page, size)
 	// 如果出错，返回服务器繁忙
 	if err != nil {
-		pkg.ResponseError(c, pkg.CodeServerBusy)
+		ResponseError(c, pkg.CodeServerBusy)
 		return
 	}
 	// 返回成功响应
-	pkg.ResponseSuccess(c, data)
+	ResponseSuccess(c, data)
 }
 
 /*
@@ -147,11 +147,11 @@ func DeleteUserHandler(c *gin.Context) {
 	err := service.DeleteUserService(token)
 	// 返回错误信息
 	if err != nil {
-		pkg.ResponseErrorWithMsg(c, err.BusinessCode, err.Message)
+		ResponseErrorWithMsg(c, err.BusinessCode, err.Message)
 		return
 	}
 	// 返回操作成功
-	pkg.ResponseOperateSuccess(c)
+	ResponseOperateSuccess(c)
 }
 
 func UpdateUserHandler(c *gin.Context) {
@@ -159,31 +159,29 @@ func UpdateUserHandler(c *gin.Context) {
 	token := pkg.Token{Token: strings.Split(c.GetHeader("Authorization"), " ")[1]}
 
 	// 注册用户
-	userProfile := &models.UserProfile{}
+	userProfile:=&models.UserProfile{}
 
 	// 检查参数是否合法
 	if err := c.ShouldBind(userProfile); err != nil {
-		pkg.ResponseError(c, pkg.CodeInvalidParam)
-		return
-	}
-	fmt.Println(userProfile)
+			ResponseError(c, pkg.CodeInvalidParam)
+			return
+		}
+		fmt.Println(userProfile)
 	// 检查账户详情是否合法
 	if err := UserProfileValid(userProfile); err != nil {
-		pkg.ResponseError(c, pkg.CodeInvalidParam)
+			ResponseError(c, pkg.CodeInvalidParam)
+			return
+		}
+	if err := service.UpdateUserProfileService(token,userProfile);err != nil {
+		ResponseErrorWithMsg(c, err.BusinessCode, err.Message)
 		return
 	}
-	if err := service.UpdateUserProfileService(token, userProfile); err != nil {
-		pkg.ResponseErrorWithMsg(c, err.BusinessCode, err.Message)
-		return
-	}
-	pkg.ResponseOperateSuccess(c)
+	ResponseOperateSuccess(c)
 }
 func A(c *gin.Context) {
-	a := models.User{}
-	a.GetAllUser(1, 10)
 	redis0, _ := redis.GetRedis(0)
 	redis0.Set("username", "zhangsan", 0).Err()
 	username, _ := redis0.Get("username").Result()
 	fmt.Println(username) // zhangsan
-	// pkg.ResponseSuccess(c, a.GetUser())
+	panic("An unexpected error happen!")
 }

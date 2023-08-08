@@ -14,6 +14,8 @@ var Conf = new(AppConfig)
 type AppConfig struct {
 	Mode           string                         `mapstructure:"mode"` // 应用程序运行模式
 	Port           int                            `mapstructure:"port"` // 应用程序监听端口
+	StartTime      string                         `mapstructure:"start_time"`
+	MachineID      int64                          `mapstructure:"machine_id"`
 	*LogConfig     `mapstructure:"log"`           // 日志配置信息
 	*MySQLConfig   `mapstructure:"mysql"`         // MySQL 数据库配置信息
 	*RedisConfig   `mapstructure:"redis"`         // Redis 数据库配置信息

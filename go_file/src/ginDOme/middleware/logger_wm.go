@@ -24,11 +24,13 @@ func LoggerMiddleware1() gin.HandlerFunc {
 		statusCode := c.Writer.Status()
 		// // 请求ip
 		clientIP := c.ClientIP()
+		requestID, _ := c.Get("request_id")
 		log.Info("999",
 			log.Int("status_code", statusCode),
 			log.Float64("latency_time", latencyTime),
 			log.String("client_ip", clientIP),
 			log.String("req_uri", reqUrl),
-			log.String("req_method", reqMethod))
+			log.String("req_method", reqMethod),
+			log.Any("request_id", requestID))
 	}
 }

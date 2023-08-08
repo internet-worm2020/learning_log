@@ -2,7 +2,6 @@ package router
 
 import (
 	"gindome/middleware"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,6 +18,7 @@ func InitRouter() *gin.Engine {
 	// 2. 添加日志中间件
 	// r.Use(middleware.LoggerMiddleware())
 	r.Use(middleware.LoggerMiddleware1())
+	r.Use(middleware.AddUniqueNumberMiddleware())
 	// 3. 添加认证中间件
 	r.Use(middleware.AuthMiddleware())
 	// 4. 注册Swagger
