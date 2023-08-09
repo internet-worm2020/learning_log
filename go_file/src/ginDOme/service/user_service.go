@@ -84,7 +84,7 @@ func LoginUserService(u *models.User) (*pkg.Token, *pkg.Error) {
 		return nil, pkg.NewErrorAutoMsg(pkg.CodeInvalidPassword)
 	}
 	// 4. 比较用户输入的账号和密码是否与数据库中的记录匹配
-	if user.Account != u.Account || user.Password != u.Password {
+	if (user.Account != u.Account) || (user.Password != u.Password) {
 		return nil, pkg.NewErrorAutoMsg(pkg.CodeInvalidPassword)
 	}
 
@@ -188,7 +188,7 @@ UpdateUserProfileService
 
 @return: pkg.Error 错误信息
 */
-func UpdateUserProfileService(token pkg.Token,userProfile *models.UserProfile) *pkg.Error {
+func UpdateUserProfileService(token pkg.Token, userProfile *models.UserProfile) *pkg.Error {
 	// 定义签名信息
 	var claims *pkg.Claims
 	// 定义用户id
@@ -204,7 +204,7 @@ func UpdateUserProfileService(token pkg.Token,userProfile *models.UserProfile) *
 	// 获取令牌内用户ID
 	uId = claims.UId
 	// 调用修改用户详情
-	err := repository.UpdateUserProfile(uId,userProfile)
+	err := repository.UpdateUserProfile(uId, userProfile)
 	if err != nil {
 		pkg.NewErrorAutoMsg(pkg.CodeServerBusy).WithErr(err)
 	}

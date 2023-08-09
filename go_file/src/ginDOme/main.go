@@ -10,13 +10,13 @@ import (
 	"gindome/pkg/jobs"
 	"gindome/pkg/snowflake"
 	"gindome/router"
+	"gindome/service"
+	logs "github.com/internet-worm2020/go-pkg/log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
-
-	logs "github.com/internet-worm2020/go-pkg/log"
 )
 
 func main() {
@@ -43,11 +43,12 @@ func main() {
 	}
 	// 7.注册路由
 	r := router.InitRouter()
-	srv:=&http.Server{
-		Addr:fmt.Sprintf("127.0.0.1:%d", setting.Conf.Port),
+	srv := &http.Server{
+		Addr:    fmt.Sprintf("127.0.0.1:%d", setting.Conf.Port),
 		Handler: r,
 	}
-	go func(){
+	go service.MessageManager()
+	go func() {
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			fmt.Printf("listen: %s\n", err)
 		}
@@ -63,8 +64,4 @@ func main() {
 		fmt.Println("Server Shutdown:", err)
 	}
 	fmt.Println("Server exiting")
-	// err := http.ListenAndServe(fmt.Sprintf("127.0.0.1:%d", setting.Conf.Port), r)
-	// if err != nil {
-	// 	return
-	// }
 }

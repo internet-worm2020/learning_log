@@ -13,25 +13,25 @@ import (
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 跳过认证操作的URL切片，根据需求添加
-		skipAuthURLs := []string{"index", "login", "register", "swagger","ws"}
-		requestURL := c.Request.URL
-		// 遍历 skipAuthURLs 切片，如果请求URL包含其中任意一个字符串，则跳过认证步骤
-		for _, skipURL := range skipAuthURLs {
-			if strings.Contains(requestURL.String(), skipURL) {
-				c.Next()
-				return
-			}
+		requestURL := c.Request.URL.String()
+		if shouldSkipAuth(requestURL) {
+			c.Next()
+			return
 		}
 		// 校验是否携带token
 		authHeader := c.Request.Header.Get("Authorization")
-		if authHeader == "" {
+		authUrlHeader := c.Query("token")
+		var token *pkg.Claims
+		var pkgErr *pkg.Error
+		if authHeader != "" {
+			token, pkgErr = parseToken(authHeader)
+		} else if authUrlHeader != "" {
+			token, pkgErr = parseToken(authUrlHeader)
+		} else {
 			controller.ResponseError(c, pkg.CodeNeedLogin)
 			c.Abort()
 			return
 		}
-
-		// 解析 Authorization 头并校验 token 是否正确
-		token, pkgErr := parseToken(authHeader)
 		if token == nil {
 			controller.ResponseErrorWithMsg(c, pkgErr.BusinessCode, pkgErr.Message)
 			c.Abort()
@@ -73,4 +73,15 @@ func parseToken(authHeader string) (*pkg.Claims, *pkg.Error) {
 	}
 
 	return mc, pkg.NewErrorAutoMsg(pkg.CodeSuccess)
+}
+
+var skipAuthURLs = []string{"index", "login", "register", "swagger"}
+
+func shouldSkipAuth(url string) bool {
+	for _, skipURL := range skipAuthURLs {
+		if strings.Contains(url, skipURL) {
+			return true
+		}
+	}
+	return false
 }

@@ -73,36 +73,13 @@ func GetAccountPassword(account string, password string) (*models.User, error) {
 	// 定义一个用户变量
 	var user models.User
 	// 根据账户名查找用户
-	db = db.Where("account=?", account).Or("password=?", password).Find(&user)
+	db = db.Where("account=? AND password=?", account, password).Find(&user)
 	// 如果查找出错，则返回错误信息
 	if db.Error != nil {
 		log.Error(sqlError(db.Error).Error())
 		return nil, sqlError(db.Error)
 	}
 	return &user, nil
-}
-
-/*
-GetIDByAccount
-
-@description: 根据账户名获取用户ID
-
-@param: account string 账户名
-
-@return: uint 用户ID
-
-@return: error 错误信息.
-*/
-func GetIDByAccount(account string) (uint, error) {
-	// 定义一个ID变量
-	var Id uint
-	// 根据账户名获取用户ID
-	if err := mysqlDB.GetDB().Table("user").Select("id").Where("account=?", account).Take(&Id).Error; err != nil {
-		log.Error(err.Error())
-		return 0, err
-	}
-	// 返回用户ID
-	return Id, nil
 }
 
 /*
@@ -201,10 +178,10 @@ func DeleteUser(uId uint) error {
 	// 定义一个用户详情变量
 	var userProfile models.UserProfile
 	// 根据id查找用户
-	userDB:=db.Where("id=?", uId)
+	userDB := db.Where("id=?", uId)
 	userDB.Find(&user)
 	// 根据关联id查找详情
-	userProfilDB:=db.Where("id=?",user.UserProfileID)
+	userProfilDB := db.Where("id=?", user.UserProfileID)
 	// 定义一个数量
 	var count int64
 	// 查询到多少数据
@@ -237,7 +214,7 @@ UpdateUserProfile
 
 @return: error 错误信息.
 */
-func UpdateUserProfile(uId uint,userProfile *models.UserProfile) error {
+func UpdateUserProfile(uId uint, userProfile *models.UserProfile) error {
 	// 获取数据库链接
 	db := mysqlDB.GetDB()
 	// 定义user变量
