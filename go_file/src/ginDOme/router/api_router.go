@@ -28,6 +28,7 @@ func setupApiRouters(r *gin.Engine) {
 	// 根据id删除用户
 	r.DELETE("/user",controller.DeleteUserHandler)
 	r.GET("/a", controller.A)
+	r.GET("/ws",controller.Ws)
 }
 
 /*

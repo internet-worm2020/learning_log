@@ -9,6 +9,7 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-playground/validator/v10 v10.14.1
 	github.com/go-redis/redis v6.15.9+incompatible
+	github.com/gorilla/websocket v1.5.0
 	github.com/internet-worm2020/go-pkg v0.0.2
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/rifflock/lfshook v0.0.0-20180920164130-b9218ef580f5
